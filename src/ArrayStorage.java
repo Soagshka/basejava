@@ -33,6 +33,7 @@ public class ArrayStorage {
                     storage[k] = storage[k + 1];
                 }
                 size--;
+                break;
             }
         }
     }
