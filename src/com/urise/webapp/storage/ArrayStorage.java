@@ -34,7 +34,7 @@ public class ArrayStorage {
         if (i != -1) {
             storage[i] = resume;
         } else {
-            System.out.println("There is no such resume for update with this uuid = " + resume.getUuid() +  " !");
+            System.out.println("There is no such resume for update with this uuid = " + resume.getUuid() + " !");
         }
     }
 
@@ -43,7 +43,7 @@ public class ArrayStorage {
         if (i != -1) {
             return storage[i];
         } else {
-            System.out.println("There is no such resume with this uuid = " + uuid +  " !");
+            System.out.println("There is no such resume with this uuid = " + uuid + " !");
             return null;
         }
     }
@@ -55,7 +55,7 @@ public class ArrayStorage {
             storage[size - 1] = null;
             size--;
         } else {
-            System.out.println("There is no such resume for delete with this uuid = " + uuid +  " !");
+            System.out.println("There is no such resume for delete with this uuid = " + uuid + " !");
         }
     }
 
