@@ -20,7 +20,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             if (index >= 0) {
                 System.out.println("Resume with this uuid = " + resume.getUuid() + " already exists!");
             } else {
-
                 storage[size] = resume;
                 size++;
             }
