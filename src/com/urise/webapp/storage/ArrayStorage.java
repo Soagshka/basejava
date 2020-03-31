@@ -17,4 +17,16 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
         return -1;
     }
+
+    @Override
+    public void delete(String uuid) {
+        int index = getStorageIndex(uuid);
+        if (index >= 0) {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
+        } else {
+            System.out.println("There is no such resume for delete with this uuid = " + uuid + " !");
+        }
+    }
 }

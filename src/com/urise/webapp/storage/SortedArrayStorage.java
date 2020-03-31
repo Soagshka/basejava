@@ -12,4 +12,17 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         searchKey.setUuid(uuid);
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
+
+    @Override
+    public void delete(String uuid) {
+        for (int j = 0; j < size; j++) {
+            if (storage[j].getUuid().equals(uuid)) {
+                for (int k = 0; k < size - 1; k++) {
+                    storage[k] = storage[k + 1];
+                }
+                size--;
+                break;
+            }
+        }
+    }
 }
