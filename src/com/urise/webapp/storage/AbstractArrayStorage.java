@@ -25,13 +25,14 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract int getStorageIndex(String uuid);
     protected abstract void deleteResume(int index);
-    protected abstract void saveResume(Resume resume);
+    protected abstract void saveResume(int index, Resume resume);
 
     @Override
     public void delete(String uuid) {
         int index = getStorageIndex(uuid);
         if (index >= 0) {
             deleteResume(index);
+            storage[size - 1] = null;
             size--;
         } else {
             System.out.println("There is no such resume for delete with this uuid = " + uuid + " !");
@@ -51,7 +52,7 @@ public abstract class AbstractArrayStorage implements Storage {
             if (index >= 0) {
                 System.out.println("Resume with this uuid = " + resume.getUuid() + " already exists!");
             } else {
-                saveResume(resume);
+                saveResume(index, resume);
                 size++;
             }
         } else {
