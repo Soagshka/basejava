@@ -20,10 +20,8 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void saveResume(int index, Resume resume) {
-        int i;
-        for (i = size - 1; (i >= 0 && i >= (index * (-1) - 1)); i--) {
-            storage[i + 1] = storage[i];
-        }
-        storage[i + 1] = resume;
+        int positionToInsert = index * (-1) - 1;
+        System.arraycopy(storage, positionToInsert, storage, positionToInsert + 1, size - positionToInsert + 1);
+        storage[positionToInsert] = resume;
     }
 }
