@@ -1,5 +1,8 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
+import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -19,12 +22,13 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return storage[index];
         }
-        System.out.println("There is no such resume with this uuid = " + uuid + " !");
-        return null;
+        throw new NotExistStorageException(uuid);
     }
 
     protected abstract int getStorageIndex(String uuid);
+
     protected abstract void deleteResume(int index);
+
     protected abstract void saveResume(int index, Resume resume);
 
     @Override
@@ -35,7 +39,7 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[size - 1] = null;
             size--;
         } else {
-            System.out.println("There is no such resume for delete with this uuid = " + uuid + " !");
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -50,13 +54,13 @@ public abstract class AbstractArrayStorage implements Storage {
         if (size < storage.length) {
             int index = getStorageIndex(resume.getUuid());
             if (index >= 0) {
-                System.out.println("Resume with this uuid = " + resume.getUuid() + " already exists!");
+                throw new ExistStorageException(resume.getUuid());
             } else {
                 saveResume(index, resume);
                 size++;
             }
         } else {
-            System.out.println("Resume overflow!");
+            throw new StorageException("Storage overflow", resume.getUuid());
         }
     }
 
@@ -66,7 +70,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             storage[index] = resume;
         } else {
-            System.out.println("There is no such resume for update with this uuid = " + resume.getUuid() + " !");
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
