@@ -3,4 +3,5 @@ out
 *.iml
 log
 
-/lib/
+lib
+lesson
