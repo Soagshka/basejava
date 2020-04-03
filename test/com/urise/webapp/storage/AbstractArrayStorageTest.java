@@ -47,12 +47,9 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertEquals(resume, storage.get(UUID_3));
     }
 
-    @Test
-    public void getAll() throws Exception {
-        Resume[] testStorage = storage.getAll();
-        for (Resume resume : testStorage) {
-            Assert.assertEquals(resume, storage.get(resume.getUuid()));
-        }
+    @Test(expected = NotExistStorageException.class)
+    public void updateNotExists() {
+        storage.update(new Resume("uuid10"));
     }
 
     @Test
@@ -63,23 +60,9 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertEquals(resume, storage.get(UUID_4));
     }
 
-    @Test(expected = NotExistStorageException.class)
-    public void delete() throws Exception {
-        storage.delete(UUID_2);
-        Assert.assertEquals(2, storage.size());
-        storage.get(UUID_2);
-    }
-
-    @Test
-    public void get() throws Exception {
-        Resume resume = new Resume(UUID_5);
-        storage.save(resume);
-        Assert.assertEquals(resume, storage.get(UUID_5));
-    }
-
-    @Test(expected = NotExistStorageException.class)
-    public void getNotExist() throws Exception {
-        storage.get("dummy");
+    @Test(expected = ExistStorageException.class)
+    public void saveExists() {
+        storage.save(new Resume(UUID_1));
     }
 
     @Test(expected = StorageException.class)
@@ -94,9 +77,11 @@ public abstract class AbstractArrayStorageTest {
         storage.save(new Resume());
     }
 
-    @Test(expected = ExistStorageException.class)
-    public void saveExists() {
-        storage.save(new Resume(UUID_1));
+    @Test(expected = NotExistStorageException.class)
+    public void delete() throws Exception {
+        storage.delete(UUID_2);
+        Assert.assertEquals(2, storage.size());
+        storage.get(UUID_2);
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -104,8 +89,26 @@ public abstract class AbstractArrayStorageTest {
         storage.delete("uuid10");
     }
 
+    @Test
+    public void get() throws Exception {
+        Resume resume = new Resume(UUID_5);
+        storage.save(resume);
+        Assert.assertEquals(resume, storage.get(UUID_5));
+    }
+
+    @Test
+    public void getAll() throws Exception {
+        Resume[] testStorage = new Resume[storage.size()];
+        testStorage[0] = new Resume(UUID_1);
+        testStorage[1] = new Resume(UUID_2);
+        testStorage[2] = new Resume(UUID_3);
+        for (int i = 0; i < 3; i++) {
+            Assert.assertEquals(testStorage[i], storage.getAll()[i]);
+        }
+    }
+
     @Test(expected = NotExistStorageException.class)
-    public void updateNotExists() {
-        storage.update(new Resume("uuid10"));
+    public void getNotExist() throws Exception {
+        storage.get("dummy");
     }
 }
