@@ -9,7 +9,7 @@ public class ListStorage extends AbstractStorage {
     List<Resume> resumeList = new ArrayList<>();
 
     @Override
-    public void clearStorage() {
+    public void clear() {
         resumeList.clear();
     }
 
@@ -34,16 +34,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAllResumes() {
-        Resume[] resumeArray = new Resume[resumeList.size()];
-        for (int i = 0; i < resumeList.size(); i++) {
-            resumeArray[i] = resumeList.get(i);
-        }
-        return resumeArray;
+    public Resume[] getAll() {
+        return resumeList.toArray(new Resume[resumeList.size()]);
     }
 
     @Override
-    protected int getStorageSize() {
+    public int size() {
         return resumeList.size();
     }
 

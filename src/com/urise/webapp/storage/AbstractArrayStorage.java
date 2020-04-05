@@ -31,7 +31,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size--;
     }
 
-    public void clearStorage() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
@@ -49,12 +49,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[index] = resume;
     }
 
-    public Resume[] getAllResumes() {
+    public Resume[] getAll() {
         return Arrays.copyOf(storage, size);
-    }
-
-    @Override
-    protected int getStorageSize() {
-        return size;
     }
 }
