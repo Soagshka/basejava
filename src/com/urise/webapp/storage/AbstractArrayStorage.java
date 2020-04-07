@@ -11,7 +11,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-    protected abstract Object getStorageIndex(String uuid);
+    protected abstract Object getStorageSearchKey(String uuid);
 
     protected abstract void deleteResumeFromStorage(int index);
 
@@ -21,12 +21,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
-    public Resume getResume(Object index) {
-        return storage[(int) index];
+    public Resume getResume(Object searchKey) {
+        return storage[(int) searchKey];
     }
 
-    public void deleteResume(Object index) {
-        deleteResumeFromStorage((Integer) index);
+    public void deleteResume(Object searchKey) {
+        deleteResumeFromStorage((Integer) searchKey);
         storage[size - 1] = null;
         size--;
     }
@@ -36,17 +36,17 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    public void saveResume(Resume resume, Object index) {
+    public void saveResume(Resume resume, Object searchKey) {
         if (size < storage.length) {
-            saveResumeToStorage(resume, (Integer) index);
+            saveResumeToStorage(resume, (Integer) searchKey);
             size++;
         } else {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
     }
 
-    public void updateResume(Resume resume, Object index) {
-        storage[(int) index] = resume;
+    public void updateResume(Resume resume, Object searchKey) {
+        storage[(int) searchKey] = resume;
     }
 
     public Resume[] getAll() {
@@ -54,10 +54,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        if ((int) index >= 0) {
-            return true;
-        }
-        return false;
+    protected boolean isExist(Object searchKey) {
+        return (int) searchKey >= 0;
     }
 }

@@ -7,59 +7,53 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MapStorage extends ArrayStorage {
-    Map<String, Resume> resumeHashMap = new LinkedHashMap<>();
+    Map<String, Resume> resumeLinkedHashMap = new LinkedHashMap<>();
 
     @Override
     public void clear() {
-        resumeHashMap.clear();
+        resumeLinkedHashMap.clear();
     }
 
     @Override
-    public void updateResume(Resume resume, Object index) {
-        resumeHashMap.put((String) index, resume);
+    public void updateResume(Resume resume, Object searchKey) {
+        resumeLinkedHashMap.put((String) searchKey, resume);
     }
 
     @Override
-    public void saveResume(Resume resume, Object index) {
-        resumeHashMap.put(resume.getUuid(), resume);
+    public void saveResume(Resume resume, Object searchKey) {
+        resumeLinkedHashMap.put(resume.getUuid(), resume);
     }
 
     @Override
-    public Resume getResume(Object index) {
-        return resumeHashMap.get(index);
+    public Resume getResume(Object searchKey) {
+        return resumeLinkedHashMap.get(searchKey);
     }
 
     @Override
-    public void deleteResume(Object index) {
-        resumeHashMap.remove(index);
+    public void deleteResume(Object searchKey) {
+        resumeLinkedHashMap.remove(searchKey);
     }
 
     @Override
     public Resume[] getAll() {
-        System.out.println(Arrays.toString(resumeHashMap.values().toArray(new Resume[resumeHashMap.size()])));
-        return resumeHashMap.values().toArray(new Resume[resumeHashMap.size()]);
+        return resumeLinkedHashMap.values().toArray(new Resume[resumeLinkedHashMap.size()]);
     }
 
     @Override
     public int size() {
-        return resumeHashMap.size();
+        return resumeLinkedHashMap.size();
     }
 
     @Override
-    public Object getStorageIndex(String uuid) {
-        for (Map.Entry<String, Resume> entry : resumeHashMap.entrySet()) {
-            if (uuid.equals(entry.getKey())) {
-                return entry.getKey();
-            }
+    public Object getStorageSearchKey(String uuid) {
+        if (isExist(uuid)) {
+            return uuid;
         }
         return null;
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        if (index != null) {
-            return true;
-        }
-        return false;
+    protected boolean isExist(Object searchKey) {
+        return resumeLinkedHashMap.containsKey(searchKey);
     }
 }
