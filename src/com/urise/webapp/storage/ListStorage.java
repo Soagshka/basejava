@@ -3,9 +3,12 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
+    protected static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
+
     List<Resume> resumeList = new ArrayList<>();
 
     @Override
@@ -34,19 +37,14 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return resumeList.toArray(new Resume[resumeList.size()]);
-    }
-
-    @Override
     public int size() {
         return resumeList.size();
     }
 
     @Override
-    protected Object getStorageSearchKey(String uuid) {
+    protected Object getStorageSearchKey(String identifier) {
         for (int i = 0; i < resumeList.size(); i++) {
-            if (uuid.equals(resumeList.get(i).getUuid())) {
+            if (identifier.equals(resumeList.get(i).getUuid())) {
                 return i;
             }
         }
@@ -56,5 +54,16 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected boolean isExist(Object searchKey) {
         return (int) searchKey != -1;
+    }
+
+    @Override
+    protected List<Resume> sort() {
+        resumeList.sort(RESUME_COMPARATOR);
+        return resumeList;
+    }
+
+    @Override
+    protected String getKeyByUuid(String uuid) {
+        return uuid;
     }
 }

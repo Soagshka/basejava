@@ -2,58 +2,58 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
-public class MapStorage extends ArrayStorage {
-    Map<String, Resume> resumeLinkedHashMap = new LinkedHashMap<>();
+public abstract class MapStorage extends AbstractStorage {
+    protected abstract Comparator<Resume> compare();
+
+    Map<String, Resume> mapStorage = new LinkedHashMap<>();
 
     @Override
     public void clear() {
-        resumeLinkedHashMap.clear();
+        mapStorage.clear();
     }
 
     @Override
     public void updateResume(Resume resume, Object searchKey) {
-        resumeLinkedHashMap.put((String) searchKey, resume);
+        mapStorage.put((String) searchKey, resume);
     }
 
     @Override
-    public void saveResume(Resume resume, Object searchKey) {
-        resumeLinkedHashMap.put(resume.getUuid(), resume);
-    }
+    public abstract void saveResume(Resume resume, Object searchKey);
 
     @Override
     public Resume getResume(Object searchKey) {
-        return resumeLinkedHashMap.get(searchKey);
+        return mapStorage.get(searchKey);
     }
 
     @Override
     public void deleteResume(Object searchKey) {
-        resumeLinkedHashMap.remove(searchKey);
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return resumeLinkedHashMap.values().toArray(new Resume[resumeLinkedHashMap.size()]);
+        mapStorage.remove(searchKey);
     }
 
     @Override
     public int size() {
-        return resumeLinkedHashMap.size();
+        return mapStorage.size();
     }
 
     @Override
-    public Object getStorageSearchKey(String uuid) {
-        if (isExist(uuid)) {
-            return uuid;
+    public Object getStorageSearchKey(String identifier) {
+        if (isExist(identifier)) {
+            return identifier;
         }
         return null;
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return resumeLinkedHashMap.containsKey(searchKey);
+        return mapStorage.containsKey(searchKey);
+    }
+
+    @Override
+    protected List<Resume> sort() {
+        List<Resume> resumeList = new ArrayList<>(mapStorage.values());
+        resumeList.sort(compare());
+        return new ArrayList<>(mapStorage.values());
     }
 }
