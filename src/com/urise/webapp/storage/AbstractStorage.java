@@ -4,9 +4,17 @@ import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
+    protected Resume[] storage = new Resume[STORAGE_LIMIT];
+
+    protected static final int STORAGE_LIMIT = 10_000;
+
+    protected int size = 0;
+
+    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid).thenComparing(Resume::getFullName);
 
     public abstract void updateResume(Resume resume, Object searchKey);
 
@@ -16,37 +24,11 @@ public abstract class AbstractStorage implements Storage {
 
     public abstract void deleteResume(Object searchKey);
 
-    protected abstract Object getStorageSearchKey(String identifier);
+    protected abstract Object getStorageSearchKey(String uuid);
 
     protected abstract boolean isExist(Object searchKey);
 
-    protected abstract List<Resume> sort();
-
-    protected abstract String getKeyByUuid(String uuid);
-
-    @Override
-    public void update(Resume resume) {
-        Object searchKey = getExistSearchKey(getKeyByUuid(resume.getUuid()));
-        updateResume(resume, searchKey);
-    }
-
-    @Override
-    public void save(Resume resume) {
-        Object searchKey = getNotSearchKey(getKeyByUuid(resume.getUuid()));
-        saveResume(resume, searchKey);
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        Object searchKey = getExistSearchKey(getKeyByUuid(uuid));
-        return getResume(searchKey);
-    }
-
-    @Override
-    public void delete(String uuid) {
-        Object searchKey = getExistSearchKey(getKeyByUuid(uuid));
-        deleteResume(searchKey);
-    }
+    protected abstract List<Resume> getAll();
 
     private Object getExistSearchKey(String uuid) {
         Object searchKey = getStorageSearchKey(uuid);
@@ -65,6 +47,32 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public List<Resume> getAllSorted() {
-        return sort();
+        List<Resume> resumeList = getAll();
+        resumeList.sort(RESUME_COMPARATOR);
+        return getAll();
+    }
+
+    @Override
+    public void update(Resume resume) {
+        Object searchKey = getExistSearchKey(resume.getUuid());
+        updateResume(resume, searchKey);
+    }
+
+    @Override
+    public void save(Resume resume) {
+        Object searchKey = getNotSearchKey(resume.getUuid());
+        saveResume(resume, searchKey);
+    }
+
+    @Override
+    public Resume get(String uuid) {
+        Object searchKey = getExistSearchKey(uuid);
+        return getResume(searchKey);
+    }
+
+    @Override
+    public void delete(String uuid) {
+        Object searchKey = getExistSearchKey(uuid);
+        deleteResume(searchKey);
     }
 }

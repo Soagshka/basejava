@@ -10,9 +10,9 @@ import java.util.List;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public Object getStorageSearchKey(String identifier) {
+    public Object getStorageSearchKey(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (identifier.equals(storage[i].getUuid())) {
+            if (uuid.equals(storage[i].getUuid())) {
                 return i;
             }
         }
@@ -30,7 +30,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    public List<Resume> sort() {
+    public List<Resume> getAll() {
         List<Resume> resumeList = Arrays.asList(Arrays.copyOf(storage, size));
         resumeList.sort(RESUME_COMPARATOR);
         return resumeList;
