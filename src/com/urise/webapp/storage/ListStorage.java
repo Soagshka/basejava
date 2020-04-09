@@ -56,6 +56,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected List<Resume> getAll() {
+//        System.out.println("Resume list : " +  resumeList);
         return resumeList;
     }
 }

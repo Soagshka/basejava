@@ -14,7 +14,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected int size = 0;
 
-    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid).thenComparing(Resume::getFullName);
+    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName);
 
     public abstract void updateResume(Resume resume, Object searchKey);
 
@@ -49,7 +49,7 @@ public abstract class AbstractStorage implements Storage {
     public List<Resume> getAllSorted() {
         List<Resume> resumeList = getAll();
         resumeList.sort(RESUME_COMPARATOR);
-        return getAll();
+        return resumeList;
     }
 
     @Override

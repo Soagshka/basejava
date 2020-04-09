@@ -8,22 +8,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
+    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName);
+
     private Storage storage;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
-    private static final String UUID_5 = "uuid5";
 
     private static final Resume RESUME_1 = new Resume(UUID_1, "Ivanov");
     private static final Resume RESUME_2 = new Resume(UUID_2, "Sidorov");
     private static final Resume RESUME_3 = new Resume(UUID_3, "Petrov");
     private static final Resume RESUME_4 = new Resume(UUID_4, "Markov");
-    private static final Resume RESUME_5 = new Resume(UUID_5, "Kar");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -86,20 +87,15 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() throws Exception {
-        storage.save(RESUME_5);
-        Assert.assertEquals(RESUME_5, storage.get(UUID_5));
+        Assert.assertEquals(RESUME_1, storage.get(UUID_1));
     }
 
     @Test
     public void getAllSorted() throws Exception {
         List<Resume> testListStorage = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+        testListStorage.sort(RESUME_COMPARATOR);
         Assert.assertEquals(testListStorage, storage.getAllSorted());
-    }
-
-    @Test
-    public void getAllNotSorted() throws Exception {
-        List<Resume> testListStorage = Arrays.asList(RESUME_1, RESUME_3, RESUME_2);
-        Assert.assertNotEquals(testListStorage, storage.getAllSorted());
+        Assert.assertEquals(testListStorage.size(), storage.getAllSorted().size());
     }
 
     @Test(expected = NotExistStorageException.class)
