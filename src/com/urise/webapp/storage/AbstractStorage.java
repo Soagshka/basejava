@@ -14,7 +14,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected int size = 0;
 
-    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName);
+    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     public abstract void updateResume(Resume resume, Object searchKey);
 
