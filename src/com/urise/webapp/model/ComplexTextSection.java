@@ -1,5 +1,6 @@
 package com.urise.webapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,7 +8,7 @@ public class ComplexTextSection extends AbstractSection{
     private List<Position> positionList;
 
     public ComplexTextSection(List<Position> positionList) {
-        this.positionList = positionList;
+        this.positionList = new ArrayList<>(positionList);
     }
 
     @Override
@@ -21,5 +22,12 @@ public class ComplexTextSection extends AbstractSection{
     @Override
     public int hashCode() {
         return Objects.hash(positionList);
+    }
+
+    @Override
+    public String toString() {
+        return "ComplexTextSection{" +
+                "positionList=" + positionList +
+                '}';
     }
 }

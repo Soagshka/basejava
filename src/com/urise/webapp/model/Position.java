@@ -34,4 +34,15 @@ public class Position extends AbstractSection {
     public int hashCode() {
         return Objects.hash(title, dateStart, dateEnd, information, description);
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "title='" + title + '\'' +
+                ", dateStart=" + dateStart +
+                ", dateEnd=" + dateEnd +
+                ", information='" + information + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

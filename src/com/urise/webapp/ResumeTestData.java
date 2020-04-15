@@ -3,26 +3,23 @@ package com.urise.webapp;
 import com.urise.webapp.model.*;
 
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ResumeTestData {
     public static void main(String[] args) {
         Resume resume = new Resume("uuid1", "Григорий Кислин");
 
-        Map<SectionType, AbstractSection> sectionMap = new HashMap<>();
-        Map<ContactType, AbstractSection> contactType = new HashMap<>();
+        Map<SectionType, AbstractSection> sectionMap = new EnumMap<>(SectionType.class);
+        Map<ContactType, AbstractSection> contactType = new EnumMap<>(ContactType.class);
 
         List<String> testList = new ArrayList<>();
 
         contactType.put(ContactType.TELEPHONE, new SimpleTextSection("+7(921) 855-0482"));
         contactType.put(ContactType.SKYPE, new SimpleTextSection( "grigory.kislin"));
         contactType.put(ContactType.MAIL, new SimpleTextSection("gkislin@yandex.ru"));
-        contactType.put(ContactType.PROFILE, new SimpleTextSection("https://www.linkedin.com/in/gkislin"));
-        contactType.put(ContactType.PROFILE, new SimpleTextSection("https://github.com/gkislin"));
-        contactType.put(ContactType.PROFILE, new SimpleTextSection("https://stackoverflow.com/users/548473/grigory-kislin"));
+        contactType.put(ContactType.LINKEDIN, new SimpleTextSection("https://www.linkedin.com/in/gkislin"));
+        contactType.put(ContactType.GITHUB, new SimpleTextSection("https://github.com/gkislin"));
+        contactType.put(ContactType.STACKOVERFLOW, new SimpleTextSection("https://stackoverflow.com/users/548473/grigory-kislin"));
         contactType.put(ContactType.HOMEPAGE, new SimpleTextSection("http://gkislin.ru/"));
 
         sectionMap.put(SectionType.OBJECTIVE,
@@ -62,7 +59,36 @@ public class ResumeTestData {
         resume.setContactType(contactType);
         resume.setSectionMap(sectionMap);
 
-        System.out.println(resume.getSectionMap().get(SectionType.OBJECTIVE).toString());
+        printAll(resume);
+    }
 
+    public static void printAll(Resume resume) {
+        System.out.println(ContactType.TELEPHONE.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.TELEPHONE).toString());
+        System.out.println(ContactType.SKYPE.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.SKYPE).toString());
+        System.out.println(ContactType.MAIL.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.MAIL).toString());
+        System.out.println(ContactType.LINKEDIN.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.LINKEDIN).toString());
+        System.out.println(ContactType.GITHUB.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.GITHUB).toString());
+        System.out.println(ContactType.STACKOVERFLOW.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.STACKOVERFLOW).toString());
+        System.out.println(ContactType.HOMEPAGE.getTitle());
+        System.out.println(resume.getContactType().get(ContactType.HOMEPAGE).toString());
+
+        System.out.println(SectionType.OBJECTIVE.getTitle());
+        System.out.println(resume.getSectionMap().get(SectionType.OBJECTIVE).toString());
+        System.out.println(SectionType.PERSONAL.getTitle());
+        System.out.println(resume.getSectionMap().get(SectionType.PERSONAL).toString());
+        System.out.println(SectionType.ACHIEVEMENT.getTitle());
+        System.out.println(resume.getSectionMap().get(SectionType.ACHIEVEMENT).toString());
+        System.out.println(SectionType.QUALIFICATIONS.getTitle());
+        System.out.println(resume.getSectionMap().get(SectionType.QUALIFICATIONS).toString());
+        System.out.println(SectionType.EXPERIENCE.getTitle());
+        System.out.println(resume.getSectionMap().get(SectionType.EXPERIENCE).toString());
+        System.out.println(SectionType.EDUCATION.getTitle());
+        System.out.println(resume.getSectionMap().get(SectionType.EDUCATION).toString());
     }
 }

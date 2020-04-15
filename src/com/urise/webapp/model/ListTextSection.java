@@ -1,5 +1,6 @@
 package com.urise.webapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,7 +8,7 @@ public class ListTextSection extends AbstractSection {
     private List<String> information;
 
     public ListTextSection(List<String> information) {
-        this.information = information;
+        this.information = new ArrayList<>(information);
     }
 
     @Override
