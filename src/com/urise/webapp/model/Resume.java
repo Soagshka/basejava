@@ -4,19 +4,15 @@ package com.urise.webapp.model;
  * Initial resume class
  */
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Resume {
 
     // Unique identifier
     private final String uuid;
     private String fullName;
-    private Map<SectionType, Section> sectionMap = new HashMap<>();
-    private Map<SectionType, List<Section>> complexSectionListMap = new HashMap<>();
-    private Map<ContactType, Section> contactType = new HashMap<>();
+    private Map<SectionType, AbstractSection> sectionMap = new EnumMap<SectionType, AbstractSection>(SectionType.class);
+    private Map<ContactType, AbstractSection> contactType = new EnumMap<ContactType, AbstractSection>(ContactType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -35,27 +31,19 @@ public class Resume {
         return fullName;
     }
 
-    public Map<SectionType, Section> getSectionMap() {
+    public Map<SectionType, AbstractSection> getSectionMap() {
         return sectionMap;
     }
 
-    public void setSectionMap(Map<SectionType, Section> sectionMap) {
+    public void setSectionMap(Map<SectionType, AbstractSection> sectionMap) {
         this.sectionMap = sectionMap;
     }
 
-    public Map<SectionType, List<Section>> getComplexSectionListMap() {
-        return complexSectionListMap;
-    }
-
-    public void setComplexSectionListMap(Map<SectionType, List<Section>> complexSectionListMap) {
-        this.complexSectionListMap = complexSectionListMap;
-    }
-
-    public Map<ContactType, Section> getContactType() {
+    public Map<ContactType, AbstractSection> getContactType() {
         return contactType;
     }
 
-    public void setContactType(Map<ContactType, Section> contactType) {
+    public void setContactType(Map<ContactType, AbstractSection> contactType) {
         this.contactType = contactType;
     }
 
@@ -63,15 +51,16 @@ public class Resume {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
-        return uuid.equals(resume.uuid);
+        return Objects.equals(uuid, resume.uuid) &&
+                Objects.equals(fullName, resume.fullName) &&
+                Objects.equals(sectionMap, resume.sectionMap) &&
+                Objects.equals(contactType, resume.contactType);
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return Objects.hash(uuid, fullName, sectionMap, contactType);
     }
 
     @Override

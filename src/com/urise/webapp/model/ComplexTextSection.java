@@ -1,19 +1,25 @@
 package com.urise.webapp.model;
 
-import java.time.YearMonth;
+import java.util.List;
+import java.util.Objects;
 
-public class ComplexTextSection extends Section{
-    private String title;
-    private YearMonth dateStart;
-    private YearMonth dateEnd;
-    private String information;
-    private String description;
+public class ComplexTextSection extends AbstractSection{
+    private List<Position> positionList;
 
-    public ComplexTextSection(String title, YearMonth dateStart, YearMonth dateEnd, String information, String description) {
-        this.title = title;
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
-        this.information = information;
-        this.description = description;
+    public ComplexTextSection(List<Position> positionList) {
+        this.positionList = positionList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComplexTextSection that = (ComplexTextSection) o;
+        return Objects.equals(positionList, that.positionList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(positionList);
     }
 }
