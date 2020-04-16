@@ -42,18 +42,18 @@ public class ResumeTestData {
 
         List<Position> testPositionList = new ArrayList<>();
         testPositionList.add(new Position("Java Online Projects", YearMonth.of(2013 , 10), YearMonth.now(),
-                "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок."));
+                new ArrayList<>(Arrays.asList("Автор проекта")), "Создание, организация и проведение Java онлайн проектов и стажировок."));
         testPositionList.add(new Position("Wrike", YearMonth.of(2014 , 10), YearMonth.of(2016,01),
-                "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами" +
+                new ArrayList<>(Arrays.asList("Старший разработчик (backend)")), "Проектирование и разработка онлайн платформы управления проектами" +
                 " Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
                 "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
         sectionMap.put(SectionType.EXPERIENCE, new ComplexTextSection(testPositionList));
         testPositionList.clear();
 
         testPositionList.add(new Position("Coursera", YearMonth.of(2013 , 03), YearMonth.of(2013, 05),
-                "\"Functional Programming Principles in Scala\" by Martin Odersky", null));
+                new ArrayList<>(Arrays.asList("\"Functional Programming Principles in Scala\" by Martin Odersky")), null));
         testPositionList.add(new Position("Luxoft", YearMonth.of(2011 , 03), YearMonth.of(2011, 04),
-                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null));
+                new ArrayList<>(Arrays.asList("Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"")), null));
         sectionMap.put(SectionType.EDUCATION, new ComplexTextSection(testPositionList));
 
         resume.setContactType(contactType);

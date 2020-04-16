@@ -7,7 +7,7 @@ import com.urise.webapp.model.Resume;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<SK> implements Storage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
 
     protected static final int STORAGE_LIMIT = 10_000;
@@ -16,30 +16,30 @@ public abstract class AbstractStorage implements Storage {
 
     protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
-    public abstract void updateResume(Resume resume, Object searchKey);
+    protected abstract void updateResume(Resume resume, SK searchKey);
 
-    public abstract void saveResume(Resume resume, Object searchKey);
+    protected abstract void saveResume(Resume resume, SK searchKey);
 
-    public abstract Resume getResume(Object searchKey);
+    protected abstract Resume getResume(SK searchKey);
 
-    public abstract void deleteResume(Object searchKey);
+    protected abstract void deleteResume(SK searchKey);
 
-    protected abstract Object getStorageSearchKey(String uuid);
+    protected abstract SK getStorageSearchKey(String uuid);
 
-    protected abstract boolean isExist(Object searchKey);
+    protected abstract boolean isExist(SK searchKey);
 
     protected abstract List<Resume> getAll();
 
-    private Object getExistSearchKey(String uuid) {
-        Object searchKey = getStorageSearchKey(uuid);
+    private SK getExistSearchKey(String uuid) {
+        SK searchKey = getStorageSearchKey(uuid);
         if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
         return searchKey;
     }
 
-    private Object getNotSearchKey(String uuid) {
-        Object searchKey = getStorageSearchKey(uuid);
+    private SK getNotSearchKey(String uuid) {
+        SK searchKey = getStorageSearchKey(uuid);
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
         }
@@ -54,25 +54,25 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        Object searchKey = getExistSearchKey(resume.getUuid());
+        SK searchKey = getExistSearchKey(resume.getUuid());
         updateResume(resume, searchKey);
     }
 
     @Override
     public void save(Resume resume) {
-        Object searchKey = getNotSearchKey(resume.getUuid());
+        SK searchKey = getNotSearchKey(resume.getUuid());
         saveResume(resume, searchKey);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getExistSearchKey(uuid);
+        SK searchKey = getExistSearchKey(uuid);
         return getResume(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = getExistSearchKey(uuid);
+        SK searchKey = getExistSearchKey(uuid);
         deleteResume(searchKey);
     }
 }

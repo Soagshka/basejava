@@ -10,7 +10,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     protected static final Comparator<Resume> RESUME_COMPARATOR_BY_UUID = Comparator.comparing(Resume::getUuid);
 
     @Override
-    protected Object getStorageSearchKey(String uuid) {
+    protected Integer getStorageSearchKey(String uuid) {
         Resume searchKey = new Resume(uuid, "Ivanov");
         return Arrays.binarySearch(storage, 0, size, searchKey, RESUME_COMPARATOR_BY_UUID);
     }

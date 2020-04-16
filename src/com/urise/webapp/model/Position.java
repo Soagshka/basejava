@@ -1,16 +1,17 @@
 package com.urise.webapp.model;
 
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Objects;
 
 public class Position extends AbstractSection {
     private String title;
     private YearMonth dateStart;
     private YearMonth dateEnd;
-    private String information;
+    private List<String> information;
     private String description;
 
-    public Position(String title, YearMonth dateStart, YearMonth dateEnd, String information, String description) {
+    public Position(String title, YearMonth dateStart, YearMonth dateEnd, List<String> information, String description) {
         this.title = title;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
@@ -41,7 +42,7 @@ public class Position extends AbstractSection {
                 "title='" + title + '\'' +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
-                ", information='" + information + '\'' +
+                ", information=" + information +
                 ", description='" + description + '\'' +
                 '}';
     }
