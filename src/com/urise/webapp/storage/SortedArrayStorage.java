@@ -4,7 +4,6 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     protected static final Comparator<Resume> RESUME_COMPARATOR_BY_UUID = Comparator.comparing(Resume::getUuid);
@@ -25,10 +24,5 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         int idxToInsert = -index - 1;
         System.arraycopy(storage, idxToInsert, storage, idxToInsert + 1, size - idxToInsert);
         storage[idxToInsert] = resume;
-    }
-
-    @Override
-    public List<Resume> getAll() {
-        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 }

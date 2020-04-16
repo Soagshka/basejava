@@ -15,7 +15,7 @@ public class ResumeTestData {
         List<String> testList = new ArrayList<>();
 
         contactType.put(ContactType.TELEPHONE, new SimpleTextSection("+7(921) 855-0482"));
-        contactType.put(ContactType.SKYPE, new SimpleTextSection( "grigory.kislin"));
+        contactType.put(ContactType.SKYPE, new SimpleTextSection("grigory.kislin"));
         contactType.put(ContactType.MAIL, new SimpleTextSection("gkislin@yandex.ru"));
         contactType.put(ContactType.LINKEDIN, new SimpleTextSection("https://www.linkedin.com/in/gkislin"));
         contactType.put(ContactType.GITHUB, new SimpleTextSection("https://github.com/gkislin"));
@@ -41,19 +41,25 @@ public class ResumeTestData {
         sectionMap.put(SectionType.QUALIFICATIONS, new ListTextSection(testList));
 
         List<Position> testPositionList = new ArrayList<>();
-        testPositionList.add(new Position("Java Online Projects", YearMonth.of(2013 , 10), YearMonth.now(),
-                new ArrayList<>(Arrays.asList("Автор проекта")), "Создание, организация и проведение Java онлайн проектов и стажировок."));
-        testPositionList.add(new Position("Wrike", YearMonth.of(2014 , 10), YearMonth.of(2016,01),
-                new ArrayList<>(Arrays.asList("Старший разработчик (backend)")), "Проектирование и разработка онлайн платформы управления проектами" +
+        testPositionList.add(new Position("Java Online Projects", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2013, 10),
+                YearMonth.now(), "Автор проекта"))), "Создание, организация и проведение Java онлайн проектов и стажировок."));
+        testPositionList.add(new Position("Wrike", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2014, 10),
+                YearMonth.of(2016, 1), "Старший разработчик (backend)"))), "Проектирование и разработка онлайн платформы управления проектами" +
                 " Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
                 "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
         sectionMap.put(SectionType.EXPERIENCE, new ComplexTextSection(testPositionList));
         testPositionList.clear();
 
-        testPositionList.add(new Position("Coursera", YearMonth.of(2013 , 03), YearMonth.of(2013, 05),
-                new ArrayList<>(Arrays.asList("\"Functional Programming Principles in Scala\" by Martin Odersky")), null));
-        testPositionList.add(new Position("Luxoft", YearMonth.of(2011 , 03), YearMonth.of(2011, 04),
-                new ArrayList<>(Arrays.asList("Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"")), null));
+        testPositionList.add(new Position("Coursera", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2013, 03),
+                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))), null));
+        testPositionList.add(new Position("Luxoft", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2011, 03),
+                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))), null));
+
+        testPositionList.add(new Position("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
+                new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(1993, 9),
+                                YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
+                        new PositionPeriod(YearMonth.of(1987, 9),
+                                YearMonth.of(1993, 7), "Инженер (программист Fortran, C)"))), null));
         sectionMap.put(SectionType.EDUCATION, new ComplexTextSection(testPositionList));
 
         resume.setContactType(contactType);

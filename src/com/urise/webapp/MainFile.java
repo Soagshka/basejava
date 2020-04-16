@@ -9,14 +9,16 @@ public class MainFile {
     }
 
     public static void printFiles(File dir) {
-        for (File file : dir.listFiles()) {
-            if (file.isDirectory()) {
-                printFiles(file);
-            }
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    printFiles(file);
+                }
 
-            if (file.isFile())
-            {
-                System.out.println(file.getName());
+                if (file.isFile()) {
+                    System.out.println(file.getName());
+                }
             }
         }
     }
