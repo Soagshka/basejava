@@ -34,7 +34,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        return directory.listFiles().length + 1;
+        File[] files = directory.listFiles();
+        if (files != null) {
+            return files.length + 1;
+        }
+        return 0;
     }
 
     @Override
@@ -82,14 +86,18 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> getAll() {
-        List<Resume> resumeList = new ArrayList<>();
-        for (File file : directory.listFiles()) {
-            try {
-                resumeList.add(doRead(file));
-            } catch (IOException e) {
-                throw new StorageException("IO error", file.getName(), e);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            List<Resume> resumeList = new ArrayList<>();
+            for (File file : files) {
+                try {
+                    resumeList.add(doRead(file));
+                } catch (IOException e) {
+                    throw new StorageException("IO error", file.getName(), e);
+                }
             }
+            return resumeList;
         }
-        return resumeList;
+        return null;
     }
 }

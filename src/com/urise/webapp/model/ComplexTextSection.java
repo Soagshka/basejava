@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ComplexTextSection extends AbstractSection{
-    private List<Position> positionList;
+public class ComplexTextSection extends AbstractSection {
+    private List<Organization> positionList;
 
-    public ComplexTextSection(List<Position> positionList) {
+    public ComplexTextSection(List<Organization> positionList) {
         this.positionList = new ArrayList<>(positionList);
     }
 

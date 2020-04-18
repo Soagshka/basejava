@@ -7,7 +7,11 @@ import java.util.*;
 
 public class ResumeTestData {
     public static void main(String[] args) {
-        Resume resume = new Resume("uuid1", "Григорий Кислин");
+        printAll(createResume("uuid1", "Григорий Кислин"));
+    }
+
+    public static Resume createResume(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
 
         Map<SectionType, AbstractSection> sectionMap = new EnumMap<>(SectionType.class);
         Map<ContactType, AbstractSection> contactType = new EnumMap<>(ContactType.class);
@@ -40,32 +44,46 @@ public class ResumeTestData {
         testList.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
         sectionMap.put(SectionType.QUALIFICATIONS, new ListTextSection(testList));
 
-        List<Position> testPositionList = new ArrayList<>();
-        testPositionList.add(new Position("Java Online Projects", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2013, 10),
-                YearMonth.now(), "Автор проекта"))), "Создание, организация и проведение Java онлайн проектов и стажировок."));
-        testPositionList.add(new Position("Wrike", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2014, 10),
-                YearMonth.of(2016, 1), "Старший разработчик (backend)"))), "Проектирование и разработка онлайн платформы управления проектами" +
+        List<Organization> testPositionList = new ArrayList<>();
+
+        Organization org1 = new Organization("Java Online Projects", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        org1.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 10),
+                YearMonth.now(), "Автор проекта"))));
+        testPositionList.add(org1);
+
+        Organization wrike = new Organization("Wrike", "Проектирование и разработка онлайн платформы управления проектами" +
                 " Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
-                "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
+                "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
+        wrike.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2014, 10),
+                YearMonth.of(2016, 1), "Старший разработчик (backend)"))));
+        testPositionList.add(wrike);
+
         sectionMap.put(SectionType.EXPERIENCE, new ComplexTextSection(testPositionList));
         testPositionList.clear();
 
-        testPositionList.add(new Position("Coursera", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2013, 03),
-                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))), null));
-        testPositionList.add(new Position("Luxoft", new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(2011, 03),
-                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))), null));
+        Organization coursera = new Organization("Coursera", null);
+        coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
+                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))));
+        testPositionList.add(coursera);
 
-        testPositionList.add(new Position("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                new ArrayList<>(Arrays.asList(new PositionPeriod(YearMonth.of(1993, 9),
-                                YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
-                        new PositionPeriod(YearMonth.of(1987, 9),
-                                YearMonth.of(1993, 7), "Инженер (программист Fortran, C)"))), null));
+        Organization luxoft = new Organization("Luxoft", null);
+        luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
+                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))));
+        testPositionList.add(luxoft);
+
+        Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", null);
+        student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
+                        YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
+                new Position(YearMonth.of(1987, 9),
+                        YearMonth.of(1993, 7), "Инженер (программист Fortran, C)"))));
+        testPositionList.add(student);
+
         sectionMap.put(SectionType.EDUCATION, new ComplexTextSection(testPositionList));
 
         resume.setContactType(contactType);
         resume.setSectionMap(sectionMap);
 
-        printAll(resume);
+        return resume;
     }
 
     public static void printAll(Resume resume) {

@@ -1,40 +1,40 @@
 package com.urise.webapp.model;
 
-import java.util.List;
+import java.time.YearMonth;
 import java.util.Objects;
 
 public class Position {
-    private String title;
-    private List<PositionPeriod> positionPeriodList;
-    private String description;
+    private YearMonth dateStart;
+    private YearMonth dateEnd;
+    private String information;
 
-    public Position(String title, List<PositionPeriod> positionPeriodList, String description) {
-        this.title = title;
-        this.positionPeriodList = positionPeriodList;
-        this.description = description;
+    public Position(YearMonth dateStart, YearMonth dateEnd, String information) {
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.information = information;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Position position = (Position) o;
-        return Objects.equals(title, position.title) &&
-                Objects.equals(positionPeriodList, position.positionPeriodList) &&
-                Objects.equals(description, position.description);
+        Position that = (Position) o;
+        return Objects.equals(dateStart, that.dateStart) &&
+                Objects.equals(dateEnd, that.dateEnd) &&
+                Objects.equals(information, that.information);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, positionPeriodList, description);
+        return Objects.hash(dateStart, dateEnd, information);
     }
 
     @Override
     public String toString() {
         return "Position{" +
-                "title='" + title + '\'' +
-                ", positionPeriodList=" + positionPeriodList +
-                ", description='" + description + '\'' +
+                "dateStart=" + dateStart +
+                ", dateEnd=" + dateEnd +
+                ", information='" + information + '\'' +
                 '}';
     }
 }
