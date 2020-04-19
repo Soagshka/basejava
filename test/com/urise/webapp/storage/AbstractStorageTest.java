@@ -3,11 +3,13 @@ package com.urise.webapp.storage;
 import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -102,5 +104,50 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() throws Exception {
         storage.get("dummy");
+    }
+
+    @Test
+    public void checkOrganizationSection() {
+        List<Organization> testPositionList = new ArrayList<>();
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1", null);
+        coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
+                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))));
+        testPositionList.add(coursera);
+
+        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html", null);
+        luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
+                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))));
+        testPositionList.add(luxoft);
+
+        Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
+                "https://itmo.ru/ru/", null);
+        student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
+                        YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
+                new Position(YearMonth.of(1987, 9),
+                        YearMonth.of(1993, 7), "Инженер (программист Fortran, C)"))));
+        testPositionList.add(student);
+        OrganizationSection organizationSection = new OrganizationSection(testPositionList);
+
+        Assert.assertEquals(organizationSection, RESUME_1.getSectionMap().get(SectionType.EDUCATION));
+    }
+
+    @Test
+    public void checkListTextSection() {
+        List<String> testList = new ArrayList<>();
+
+        testList.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
+        testList.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
+        testList.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
+
+        ListTextSection listTextSection = new ListTextSection(testList);
+
+        Assert.assertEquals(listTextSection, RESUME_1.getSectionMap().get(SectionType.QUALIFICATIONS));
+    }
+
+    @Test
+    public void checkSimpleTextSection() {
+        SimpleTextSection simpleTextSection = new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
+
+        Assert.assertEquals(simpleTextSection, RESUME_1.getSectionMap().get(SectionType.OBJECTIVE));
     }
 }

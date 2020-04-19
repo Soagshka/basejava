@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ComplexTextSection extends AbstractSection {
+public class OrganizationSection extends AbstractSection {
     private List<Organization> positionList;
 
-    public ComplexTextSection(List<Organization> positionList) {
+    public OrganizationSection(List<Organization> positionList) {
         this.positionList = new ArrayList<>(positionList);
     }
 
@@ -15,7 +15,7 @@ public class ComplexTextSection extends AbstractSection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ComplexTextSection that = (ComplexTextSection) o;
+        OrganizationSection that = (OrganizationSection) o;
         return Objects.equals(positionList, that.positionList);
     }
 

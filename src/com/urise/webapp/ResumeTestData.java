@@ -46,39 +46,40 @@ public class ResumeTestData {
 
         List<Organization> testPositionList = new ArrayList<>();
 
-        Organization org1 = new Organization("Java Online Projects", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        Organization org1 = new Organization("Java Online Projects", "http://javaops.ru/", "Создание, организация и проведение Java онлайн проектов и стажировок.");
         org1.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 10),
                 YearMonth.now(), "Автор проекта"))));
         testPositionList.add(org1);
 
-        Organization wrike = new Organization("Wrike", "Проектирование и разработка онлайн платформы управления проектами" +
+        Organization wrike = new Organization("Wrike", "https://www.wrike.com/", "Проектирование и разработка онлайн платформы управления проектами" +
                 " Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
                 "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
         wrike.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2014, 10),
                 YearMonth.of(2016, 1), "Старший разработчик (backend)"))));
         testPositionList.add(wrike);
 
-        sectionMap.put(SectionType.EXPERIENCE, new ComplexTextSection(testPositionList));
+        sectionMap.put(SectionType.EXPERIENCE, new OrganizationSection(testPositionList));
         testPositionList.clear();
 
-        Organization coursera = new Organization("Coursera", null);
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1", null);
         coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
                 YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))));
         testPositionList.add(coursera);
 
-        Organization luxoft = new Organization("Luxoft", null);
+        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html", null);
         luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
                 YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))));
         testPositionList.add(luxoft);
 
-        Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", null);
+        Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
+                "https://itmo.ru/ru/", null);
         student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
                         YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
                 new Position(YearMonth.of(1987, 9),
                         YearMonth.of(1993, 7), "Инженер (программист Fortran, C)"))));
         testPositionList.add(student);
 
-        sectionMap.put(SectionType.EDUCATION, new ComplexTextSection(testPositionList));
+        sectionMap.put(SectionType.EDUCATION, new OrganizationSection(testPositionList));
 
         resume.setContactType(contactType);
         resume.setSectionMap(sectionMap);
