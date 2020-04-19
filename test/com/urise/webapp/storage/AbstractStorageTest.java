@@ -15,6 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
+    protected static final String STORAGE_DIR = new String("./storage");
+
     protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     private Storage storage;

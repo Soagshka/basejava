@@ -2,7 +2,8 @@ package com.urise.webapp.model;
 
 import java.util.Objects;
 
-public class SimpleTextSection extends AbstractSection {
+public class SimpleTextSection extends AbstractSection{
+
     private String information;
 
     public SimpleTextSection(String information) {

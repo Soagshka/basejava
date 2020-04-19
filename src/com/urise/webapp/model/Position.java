@@ -1,9 +1,12 @@
 package com.urise.webapp.model;
 
+import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
 
-public class Position {
+public class Position implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private YearMonth dateStart;
     private YearMonth dateEnd;
     private String information;
