@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private File directory;
 
     protected Strategy strategy;
 
-    protected AbstractFileStorage(File directory) {
+    protected FileStorage(File directory, Strategy strategy) {
+        this.strategy = strategy;
         Objects.requireNonNull(directory, "directory must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
@@ -27,19 +28,16 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                deleteResume(file);
-            }
+        objectNotNull(files);
+        for (File file : files) {
+            deleteResume(file);
         }
     }
 
     @Override
     public int size() {
         String[] list = directory.list();
-        if (list == null) {
-            throw new StorageException("Directory read error", null);
-        }
+        objectNotNull(list);
         return list.length;
 
     }
@@ -92,13 +90,15 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory read error", null);
-        }
+        objectNotNull(files);
         List<Resume> list = new ArrayList<>(files.length);
         for (File file : files) {
             list.add(getResume(file));
         }
         return list;
+    }
+
+    protected void objectNotNull(Object object) {
+        if (object == null) throw new StorageException("Null object ", null);
     }
 }

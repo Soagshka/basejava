@@ -3,11 +3,10 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void updateResume(Resume resume, Path searchKey) {
         try {
-            strategy.doWrite(resume, new BufferedOutputStream(new FileOutputStream(searchKey.toFile())));
+            strategy.doWrite(resume, Files.newOutputStream(searchKey));
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -38,14 +37,18 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void saveResume(Resume resume, Path searchKey) {
-        Paths.get(searchKey.toUri());
-        updateResume(resume, searchKey);
+        try {
+            Files.createFile(searchKey);
+            updateResume(resume, searchKey);
+        } catch (IOException e) {
+            throw new StorageException("File create error ", searchKey.toString(), e);
+        }
     }
 
     @Override
     protected Resume getResume(Path searchKey) {
         try {
-            return strategy.doRead(new BufferedInputStream(new FileInputStream(searchKey.toFile())));
+            return strategy.doRead(Files.newInputStream(searchKey));
         } catch (IOException e) {
             throw new StorageException("File read error", searchKey.toString(), e);
         }
@@ -72,33 +75,24 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected List<Resume> getAll() {
-        try {
-            List<Resume> resumeList = new ArrayList<>();
-            Stream<Path> paths = Files.list(directory);
-            if (paths != null) {
-                paths.forEach(path -> resumeList.add(getResume(path)));
-            }
-            return resumeList;
-        } catch (IOException e) {
-            throw new StorageException("IO Error", " inside getAll ", e);
-        }
+        return getFilesList().map(this::getResume).collect(Collectors.toList());
     }
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::deleteResume);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
-        }
+        getFilesList().forEach(this::deleteResume);
     }
 
     @Override
     public int size() {
+        return (int) getFilesList().count();
+    }
+
+    protected Stream<Path> getFilesList() {
         try {
-            return Files.list(directory).map(path -> path.resolve(directory)).collect(Collectors.toList()).size();
+            return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Size get error ", null);
+            throw new StorageException("Files.list ", null);
         }
     }
 }
