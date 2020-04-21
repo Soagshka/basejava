@@ -2,7 +2,7 @@ package com.urise.webapp.model;
 
 import java.util.Objects;
 
-public class SimpleTextSection extends AbstractSection{
+public class SimpleTextSection extends AbstractSection {
 
     private String information;
 
@@ -28,5 +28,9 @@ public class SimpleTextSection extends AbstractSection{
         return "SimpleTextSection{" +
                 "information='" + information + '\'' +
                 '}';
+    }
+
+    public String getInformation() {
+        return information;
     }
 }

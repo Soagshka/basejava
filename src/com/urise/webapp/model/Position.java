@@ -17,6 +17,18 @@ public class Position implements Serializable {
         this.information = information;
     }
 
+    public YearMonth getDateStart() {
+        return dateStart;
+    }
+
+    public YearMonth getDateEnd() {
+        return dateEnd;
+    }
+
+    public String getInformation() {
+        return information;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

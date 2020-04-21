@@ -2,6 +2,7 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.serializer.StreamSerializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,10 +16,10 @@ import java.util.stream.Stream;
 public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
 
-    protected Strategy strategy;
+    protected StreamSerializer streamSerializer;
 
-    protected PathStorage(String dir, Strategy strategy) {
-        this.strategy = strategy;
+    protected PathStorage(String dir, StreamSerializer streamSerializer) {
+        this.streamSerializer = streamSerializer;
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
@@ -29,7 +30,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void updateResume(Resume resume, Path searchKey) {
         try {
-            strategy.doWrite(resume, Files.newOutputStream(searchKey));
+            streamSerializer.doWrite(resume, Files.newOutputStream(searchKey));
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -48,7 +49,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume getResume(Path searchKey) {
         try {
-            return strategy.doRead(Files.newInputStream(searchKey));
+            return streamSerializer.doRead(Files.newInputStream(searchKey));
         } catch (IOException e) {
             throw new StorageException("File read error", searchKey.toString(), e);
         }

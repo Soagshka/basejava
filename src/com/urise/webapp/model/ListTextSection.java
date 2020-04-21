@@ -11,6 +11,10 @@ public class ListTextSection extends AbstractSection {
         this.information = new ArrayList<>(information);
     }
 
+    public List<String> getInformation() {
+        return information;
+    }
+
     @Override
     public String toString() {
         return "TextSection{" +
