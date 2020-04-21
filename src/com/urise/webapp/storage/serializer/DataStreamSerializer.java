@@ -25,31 +25,43 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeInt(sectionMap.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sectionMap.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
-
-                if ("OBJECTIVE".equals(entry.getKey().name()) || "PERSONAL".equals(entry.getKey().name())) {
-                    dos.writeUTF(((SimpleTextSection) entry.getValue()).getInformation());
-                } else if ("ACHIEVEMENT".equals(entry.getKey().name()) || "QUALIFICATIONS".equals(entry.getKey().name())) {
-                    List<String> informationList = ((ListTextSection) entry.getValue()).getInformation();
-                    dos.writeInt(informationList.size());
-                    for (String information : informationList) {
-                        dos.writeUTF(information);
-                    }
-                } else {
-                    List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getOrganizationList();
-                    dos.writeInt(organizationList.size());
-                    for (Organization organization : organizationList) {
-                        dos.writeUTF(organization.getTitle());
-                        dos.writeUTF(organization.getLink());
-                        dos.writeUTF(organization.getDescription());
-
-                        List<Position> positionList = organization.getPositionList();
-                        dos.writeInt(positionList.size());
-                        for (Position position : positionList) {
-                            dos.writeUTF(position.getDateStart().toString());
-                            dos.writeUTF(position.getDateEnd().toString());
-                            dos.writeUTF(position.getInformation());
+                dos.writeUTF(entry.getValue().getClass().getName());
+                switch (entry.getValue().getClass().getName()) {
+                    case "com.urise.webapp.model.SimpleTextSection":
+                        dos.writeUTF(((SimpleTextSection) entry.getValue()).getInformation());
+                        break;
+                    case "com.urise.webapp.model.ListTextSection":
+                        List<String> informationList = ((ListTextSection) entry.getValue()).getInformation();
+                        dos.writeInt(informationList.size());
+                        for (String information : informationList) {
+                            dos.writeUTF(information);
                         }
-                    }
+                        break;
+                    default:
+                        List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getOrganizationList();
+                        dos.writeInt(organizationList.size());
+                        for (Organization organization : organizationList) {
+                            dos.writeUTF(organization.getTitle());
+                            if (organization.getLink() != null) {
+                                dos.writeUTF(organization.getLink());
+                            } else {
+                                dos.writeUTF("");
+                            }
+                            if (organization.getDescription() != null) {
+                                dos.writeUTF(organization.getDescription());
+                            } else {
+                                dos.writeUTF("");
+                            }
+
+                            List<Position> positionList = organization.getPositionList();
+                            dos.writeInt(positionList.size());
+                            for (Position position : positionList) {
+                                dos.writeUTF(position.getDateStart().toString());
+                                dos.writeUTF(position.getDateEnd().toString());
+                                dos.writeUTF(position.getInformation());
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -70,32 +82,46 @@ public class DataStreamSerializer implements StreamSerializer {
             int sectionMapSize = dis.readInt();
             for (int i = 0; i < sectionMapSize; i++) {
                 String sectionName = dis.readUTF();
-                if ("OBJECTIVE".equals(sectionName) || "PERSONAL".equals(sectionName)) {
-                    sectionMap.put(SectionType.valueOf(sectionName), new SimpleTextSection(dis.readUTF()));
-                } else if ("ACHIEVEMENT".equals(sectionName) || "QUALIFICATIONS".equals(sectionName)) {
-                    List<String> informationList = new ArrayList<>();
-                    int informationListSize = dis.readInt();
-                    for (int j = 0; j < informationListSize; j++) {
-                        informationList.add(dis.readUTF());
-                    }
-                    sectionMap.put(SectionType.valueOf(sectionName), new ListTextSection(informationList));
-                } else {
-                    List<Organization> organizationList = new ArrayList<>();
-                    int organizationListSize = dis.readInt();
-                    for (int k = 0; k < organizationListSize; k++) {
-                        Organization org = new Organization(dis.readUTF(), dis.readUTF(), dis.readUTF());
-
-                        List<Position> positionList = new ArrayList<>();
-                        int positionListSize = dis.readInt();
-                        for (int l = 0; l < positionListSize; l++) {
-                            positionList.add(new Position(YearMonth.parse(dis.readUTF()), YearMonth.parse(dis.readUTF()), dis.readUTF()));
+                String sectionType = dis.readUTF();
+                switch (sectionType) {
+                    case "com.urise.webapp.model.SimpleTextSection":
+                        sectionMap.put(SectionType.valueOf(sectionName), new SimpleTextSection(dis.readUTF()));
+                        break;
+                    case "com.urise.webapp.model.ListTextSection":
+                        List<String> informationList = new ArrayList<>();
+                        int informationListSize = dis.readInt();
+                        for (int j = 0; j < informationListSize; j++) {
+                            informationList.add(dis.readUTF());
                         }
-                        org.getPositionList().addAll(positionList);
+                        sectionMap.put(SectionType.valueOf(sectionName), new ListTextSection(informationList));
+                        break;
+                    default:
+                        List<Organization> organizationList = new ArrayList<>();
+                        int organizationListSize = dis.readInt();
+                        for (int k = 0; k < organizationListSize; k++) {
+                            String title = dis.readUTF();
+                            String link = dis.readUTF();
+                            if (link.isEmpty()) {
+                                link = null;
+                            }
+                            String description = dis.readUTF();
+                            if (description.isEmpty()) {
+                                description = null;
+                            }
+                            Organization org = new Organization(title, link, description);
 
-                        organizationList.add(org);
+                            List<Position> positionList = new ArrayList<>();
+                            int positionListSize = dis.readInt();
+                            for (int l = 0; l < positionListSize; l++) {
+                                positionList.add(new Position(YearMonth.parse(dis.readUTF()), YearMonth.parse(dis.readUTF()), dis.readUTF()));
+                            }
+                            org.getPositionList().addAll(positionList);
 
-                        sectionMap.put(SectionType.valueOf(sectionName), new OrganizationSection(organizationList));
-                    }
+                            organizationList.add(org);
+
+                            sectionMap.put(SectionType.valueOf(sectionName), new OrganizationSection(organizationList));
+                        }
+                        break;
                 }
             }
             resume.setContactType(contacts);

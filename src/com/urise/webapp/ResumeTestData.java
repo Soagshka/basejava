@@ -61,18 +61,18 @@ public class ResumeTestData {
         sectionMap.put(SectionType.EXPERIENCE, new OrganizationSection(testPositionList));
         testPositionList.clear();
 
-        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1", "");
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1", null);
         coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
                 YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))));
         testPositionList.add(coursera);
 
-        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html", "");
+        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html", null);
         luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
                 YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))));
         testPositionList.add(luxoft);
 
         Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                "https://itmo.ru/ru/", "");
+                "https://itmo.ru/ru/", null);
         student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
                         YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
                 new Position(YearMonth.of(1987, 9),
