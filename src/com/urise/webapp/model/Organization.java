@@ -15,8 +15,16 @@ public class Organization implements Serializable {
 
     public Organization(String title, String link, String description) {
         this.title = title;
-        this.link = link;
-        this.description = description;
+        if (link != null) {
+            this.link = link;
+        } else {
+            this.link = "";
+        }
+        if (description != null) {
+            this.description = description;
+        } else {
+            this.description = "";
+        }
     }
 
     public List<Position> getPositionList() {

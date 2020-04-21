@@ -25,12 +25,13 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeInt(sectionMap.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sectionMap.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue().getClass().getName());
-                switch (entry.getValue().getClass().getName()) {
-                    case "com.urise.webapp.model.SimpleTextSection":
+                switch (entry.getKey()) {
+                    case PERSONAL:
+                    case OBJECTIVE:
                         dos.writeUTF(((SimpleTextSection) entry.getValue()).getInformation());
                         break;
-                    case "com.urise.webapp.model.ListTextSection":
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
                         List<String> informationList = ((ListTextSection) entry.getValue()).getInformation();
                         dos.writeInt(informationList.size());
                         for (String information : informationList) {
@@ -42,16 +43,8 @@ public class DataStreamSerializer implements StreamSerializer {
                         dos.writeInt(organizationList.size());
                         for (Organization organization : organizationList) {
                             dos.writeUTF(organization.getTitle());
-                            if (organization.getLink() != null) {
-                                dos.writeUTF(organization.getLink());
-                            } else {
-                                dos.writeUTF("");
-                            }
-                            if (organization.getDescription() != null) {
-                                dos.writeUTF(organization.getDescription());
-                            } else {
-                                dos.writeUTF("");
-                            }
+                            dos.writeUTF(organization.getLink());
+                            dos.writeUTF(organization.getDescription());
 
                             List<Position> positionList = organization.getPositionList();
                             dos.writeInt(positionList.size());
@@ -82,12 +75,13 @@ public class DataStreamSerializer implements StreamSerializer {
             int sectionMapSize = dis.readInt();
             for (int i = 0; i < sectionMapSize; i++) {
                 String sectionName = dis.readUTF();
-                String sectionType = dis.readUTF();
-                switch (sectionType) {
-                    case "com.urise.webapp.model.SimpleTextSection":
+                switch (sectionName) {
+                    case "PERSONAL":
+                    case "OBJECTIVE":
                         sectionMap.put(SectionType.valueOf(sectionName), new SimpleTextSection(dis.readUTF()));
                         break;
-                    case "com.urise.webapp.model.ListTextSection":
+                    case "ACHIEVEMENT":
+                    case "QUALIFICATIONS":
                         List<String> informationList = new ArrayList<>();
                         int informationListSize = dis.readInt();
                         for (int j = 0; j < informationListSize; j++) {
@@ -101,13 +95,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         for (int k = 0; k < organizationListSize; k++) {
                             String title = dis.readUTF();
                             String link = dis.readUTF();
-                            if (link.isEmpty()) {
-                                link = null;
-                            }
                             String description = dis.readUTF();
-                            if (description.isEmpty()) {
-                                description = null;
-                            }
                             Organization org = new Organization(title, link, description);
 
                             List<Position> positionList = new ArrayList<>();
