@@ -81,7 +81,7 @@ public class ResumeTestData {
 
         sectionMap.put(SectionType.EDUCATION, new OrganizationSection(testPositionList));
 
-        resume.setContactType(contactType);
+        resume.setContactMap(contactType);
         resume.setSectionMap(sectionMap);
 
         return resume;
@@ -89,19 +89,19 @@ public class ResumeTestData {
 
     public static void printAll(Resume resume) {
         System.out.println(ContactType.TELEPHONE.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.TELEPHONE).toString());
+        System.out.println(resume.getContactMap().get(ContactType.TELEPHONE).toString());
         System.out.println(ContactType.SKYPE.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.SKYPE).toString());
+        System.out.println(resume.getContactMap().get(ContactType.SKYPE).toString());
         System.out.println(ContactType.MAIL.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.MAIL).toString());
+        System.out.println(resume.getContactMap().get(ContactType.MAIL).toString());
         System.out.println(ContactType.LINKEDIN.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.LINKEDIN).toString());
+        System.out.println(resume.getContactMap().get(ContactType.LINKEDIN).toString());
         System.out.println(ContactType.GITHUB.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.GITHUB).toString());
+        System.out.println(resume.getContactMap().get(ContactType.GITHUB).toString());
         System.out.println(ContactType.STACKOVERFLOW.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.STACKOVERFLOW).toString());
+        System.out.println(resume.getContactMap().get(ContactType.STACKOVERFLOW).toString());
         System.out.println(ContactType.HOMEPAGE.getTitle());
-        System.out.println(resume.getContactType().get(ContactType.HOMEPAGE).toString());
+        System.out.println(resume.getContactMap().get(ContactType.HOMEPAGE).toString());
 
         System.out.println(SectionType.OBJECTIVE.getTitle());
         System.out.println(resume.getSectionMap().get(SectionType.OBJECTIVE).toString());

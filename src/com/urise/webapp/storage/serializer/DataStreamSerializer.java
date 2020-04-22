@@ -15,8 +15,7 @@ public class DataStreamSerializer implements StreamSerializer {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-            Map<ContactType, AbstractSection> contacts = resume.getContactType();
-            dos.writeInt(contacts.size());
+            Map<ContactType, AbstractSection> contacts = resume.getContactMap();
 
             writeWithException(contacts.entrySet(), dos, element -> {
                 dos.writeUTF(element.getKey().name());
@@ -24,7 +23,6 @@ public class DataStreamSerializer implements StreamSerializer {
             });
 
             Map<SectionType, AbstractSection> sectionMap = resume.getSectionMap();
-            dos.writeInt(sectionMap.size());
 
             writeWithException(sectionMap.entrySet(), dos, entry -> {
                 dos.writeUTF(entry.getKey().name());
@@ -69,14 +67,14 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            Map<ContactType, AbstractSection> contacts = resume.getContactType();
-            int contactsSize = dis.readInt();
-            for (int i = 0; i < contactsSize; i++) {
+            Map<ContactType, AbstractSection> contacts = resume.getContactMap();
+            readWithException(dis, () -> {
                 contacts.put(ContactType.valueOf(dis.readUTF()), new SimpleTextSection(dis.readUTF()));
-            }
+            });
+            resume.setContactMap(contacts);
+
             Map<SectionType, AbstractSection> sectionMap = resume.getSectionMap();
-            int sectionMapSize = dis.readInt();
-            for (int i = 0; i < sectionMapSize; i++) {
+            readWithException(dis, () -> {
                 String sectionName = dis.readUTF();
                 switch (sectionName) {
                     case "PERSONAL":
@@ -113,15 +111,23 @@ public class DataStreamSerializer implements StreamSerializer {
                         }
                         break;
                 }
-            }
-            resume.setContactType(contacts);
+            });
+            resume.setSectionMap(sectionMap);
             return resume;
         }
     }
 
     <T> void writeWithException(Collection<T> collection, DataOutputStream dos, WriterInterface<T> writer) throws IOException {
+        dos.writeInt(collection.size());
         for (T element : collection) {
             writer.write(element);
+        }
+    }
+
+    <T> void readWithException(DataInputStream dis, ReaderInterface<T> reader) throws IOException {
+        int collectionSize = dis.readInt();
+        for (int i = 0; i < collectionSize; i++) {
+            reader.read();
         }
     }
 }
