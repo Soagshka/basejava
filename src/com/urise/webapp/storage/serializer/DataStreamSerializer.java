@@ -5,6 +5,7 @@ import com.urise.webapp.model.*;
 import java.io.*;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +17,16 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getFullName());
             Map<ContactType, AbstractSection> contacts = resume.getContactType();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, AbstractSection> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(((SimpleTextSection) entry.getValue()).getInformation());
-            }
+
+            writeWithException(contacts.entrySet(), dos, element -> {
+                dos.writeUTF(element.getKey().name());
+                dos.writeUTF(((SimpleTextSection) element.getValue()).getInformation());
+            });
 
             Map<SectionType, AbstractSection> sectionMap = resume.getSectionMap();
             dos.writeInt(sectionMap.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sectionMap.entrySet()) {
+
+            writeWithException(sectionMap.entrySet(), dos, entry -> {
                 dos.writeUTF(entry.getKey().name());
                 switch (entry.getKey()) {
                     case PERSONAL:
@@ -56,7 +59,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         }
                         break;
                 }
-            }
+            });
         }
     }
 
@@ -113,6 +116,12 @@ public class DataStreamSerializer implements StreamSerializer {
             }
             resume.setContactType(contacts);
             return resume;
+        }
+    }
+
+    <T> void writeWithException(Collection<T> collection, DataOutputStream dos, WriterInterface<T> writer) throws IOException {
+        for (T element : collection) {
+            writer.write(element);
         }
     }
 }
