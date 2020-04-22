@@ -111,22 +111,22 @@ public abstract class AbstractStorageTest {
     @Test
     public void checkOrganizationSection() {
         List<Organization> testPositionList = new ArrayList<>();
-        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1", null);
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1");
         coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
-                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky"))));
+                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky", null))));
         testPositionList.add(coursera);
 
-        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html", null);
+        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html");
         luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
-                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))));
+                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null))));
         testPositionList.add(luxoft);
 
         Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                "https://itmo.ru/ru/", null);
+                "https://itmo.ru/ru/");
         student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
-                        YearMonth.of(1996, 7), "Аспирантура (программист С, С++)"),
+                        YearMonth.of(1996, 7), "Аспирантура (программист С, С++)", null),
                 new Position(YearMonth.of(1987, 9),
-                        YearMonth.of(1993, 7), "Инженер (программист Fortran, C)"))));
+                        YearMonth.of(1993, 7), "Инженер (программист Fortran, C)", null))));
         testPositionList.add(student);
         OrganizationSection organizationSection = new OrganizationSection(testPositionList);
 

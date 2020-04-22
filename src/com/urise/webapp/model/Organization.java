@@ -11,19 +11,13 @@ public class Organization implements Serializable {
     private String title;
     private String link;
     private List<Position> positionList = new ArrayList<>();
-    private String description;
 
-    public Organization(String title, String link, String description) {
+    public Organization(String title, String link) {
         this.title = title;
         if (link != null) {
             this.link = link;
         } else {
             this.link = "";
-        }
-        if (description != null) {
-            this.description = description;
-        } else {
-            this.description = "";
         }
     }
 
@@ -39,10 +33,6 @@ public class Organization implements Serializable {
         return link;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,13 +40,12 @@ public class Organization implements Serializable {
         Organization that = (Organization) o;
         return Objects.equals(title, that.title) &&
                 Objects.equals(link, that.link) &&
-                Objects.equals(positionList, that.positionList) &&
-                Objects.equals(description, that.description);
+                Objects.equals(positionList, that.positionList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, link, positionList, description);
+        return Objects.hash(title, link, positionList);
     }
 
     @Override
@@ -65,7 +54,6 @@ public class Organization implements Serializable {
                 "title='" + title + '\'' +
                 ", link='" + link + '\'' +
                 ", positionList=" + positionList +
-                ", description='" + description + '\'' +
                 '}';
     }
 }

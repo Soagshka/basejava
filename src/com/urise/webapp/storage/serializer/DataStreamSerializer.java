@@ -44,7 +44,6 @@ public class DataStreamSerializer implements StreamSerializer {
                         for (Organization organization : organizationList) {
                             dos.writeUTF(organization.getTitle());
                             dos.writeUTF(organization.getLink());
-                            dos.writeUTF(organization.getDescription());
 
                             List<Position> positionList = organization.getPositionList();
                             dos.writeInt(positionList.size());
@@ -52,6 +51,7 @@ public class DataStreamSerializer implements StreamSerializer {
                                 dos.writeUTF(position.getDateStart().toString());
                                 dos.writeUTF(position.getDateEnd().toString());
                                 dos.writeUTF(position.getInformation());
+                                dos.writeUTF(position.getDescription());
                             }
                         }
                         break;
@@ -95,13 +95,12 @@ public class DataStreamSerializer implements StreamSerializer {
                         for (int k = 0; k < organizationListSize; k++) {
                             String title = dis.readUTF();
                             String link = dis.readUTF();
-                            String description = dis.readUTF();
-                            Organization org = new Organization(title, link, description);
+                            Organization org = new Organization(title, link);
 
                             List<Position> positionList = new ArrayList<>();
                             int positionListSize = dis.readInt();
                             for (int l = 0; l < positionListSize; l++) {
-                                positionList.add(new Position(YearMonth.parse(dis.readUTF()), YearMonth.parse(dis.readUTF()), dis.readUTF()));
+                                positionList.add(new Position(YearMonth.parse(dis.readUTF()), YearMonth.parse(dis.readUTF()), dis.readUTF(), dis.readUTF()));
                             }
                             org.getPositionList().addAll(positionList);
 
