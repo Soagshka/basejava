@@ -15,11 +15,11 @@ public class DataStreamSerializer implements StreamSerializer {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-            Map<ContactType, AbstractSection> contacts = resume.getContactMap();
+            Map<ContactType, String> contacts = resume.getContactMap();
 
             writeWithException(contacts.entrySet(), dos, element -> {
                 dos.writeUTF(element.getKey().name());
-                dos.writeUTF(((SimpleTextSection) element.getValue()).getInformation());
+                dos.writeUTF(element.getValue());
             });
 
             Map<SectionType, AbstractSection> sectionMap = resume.getSectionMap();
@@ -34,27 +34,25 @@ public class DataStreamSerializer implements StreamSerializer {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         List<String> informationList = ((ListTextSection) entry.getValue()).getInformation();
-                        dos.writeInt(informationList.size());
-                        for (String information : informationList) {
+                        writeWithException(informationList, dos, information -> {
                             dos.writeUTF(information);
-                        }
+                        });
                         break;
-                    default:
+                    case EXPERIENCE:
+                    case EDUCATION:
                         List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getOrganizationList();
-                        dos.writeInt(organizationList.size());
-                        for (Organization organization : organizationList) {
+                        writeWithException(organizationList, dos, organization -> {
                             dos.writeUTF(organization.getTitle());
                             dos.writeUTF(organization.getLink());
 
                             List<Position> positionList = organization.getPositionList();
-                            dos.writeInt(positionList.size());
-                            for (Position position : positionList) {
+                            writeWithException(positionList, dos, position -> {
                                 dos.writeUTF(position.getDateStart().toString());
                                 dos.writeUTF(position.getDateEnd().toString());
                                 dos.writeUTF(position.getInformation());
                                 dos.writeUTF(position.getDescription());
-                            }
-                        }
+                            });
+                        });
                         break;
                 }
             });
@@ -67,48 +65,46 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            Map<ContactType, AbstractSection> contacts = resume.getContactMap();
+            Map<ContactType, String> contacts = resume.getContactMap();
             readWithException(dis, () -> {
-                contacts.put(ContactType.valueOf(dis.readUTF()), new SimpleTextSection(dis.readUTF()));
+                contacts.put(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             });
             resume.setContactMap(contacts);
 
             Map<SectionType, AbstractSection> sectionMap = resume.getSectionMap();
             readWithException(dis, () -> {
-                String sectionName = dis.readUTF();
-                switch (sectionName) {
-                    case "PERSONAL":
-                    case "OBJECTIVE":
-                        sectionMap.put(SectionType.valueOf(sectionName), new SimpleTextSection(dis.readUTF()));
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        sectionMap.put(sectionType, new SimpleTextSection(dis.readUTF()));
                         break;
-                    case "ACHIEVEMENT":
-                    case "QUALIFICATIONS":
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
                         List<String> informationList = new ArrayList<>();
-                        int informationListSize = dis.readInt();
-                        for (int j = 0; j < informationListSize; j++) {
+                        readWithException(dis, () -> {
                             informationList.add(dis.readUTF());
-                        }
-                        sectionMap.put(SectionType.valueOf(sectionName), new ListTextSection(informationList));
+                        });
+                        sectionMap.put(sectionType, new ListTextSection(informationList));
                         break;
-                    default:
+                    case EXPERIENCE:
+                    case EDUCATION:
                         List<Organization> organizationList = new ArrayList<>();
-                        int organizationListSize = dis.readInt();
-                        for (int k = 0; k < organizationListSize; k++) {
+                        readWithException(dis, () -> {
                             String title = dis.readUTF();
                             String link = dis.readUTF();
                             Organization org = new Organization(title, link);
 
                             List<Position> positionList = new ArrayList<>();
-                            int positionListSize = dis.readInt();
-                            for (int l = 0; l < positionListSize; l++) {
+                            readWithException(dis, () -> {
                                 positionList.add(new Position(YearMonth.parse(dis.readUTF()), YearMonth.parse(dis.readUTF()), dis.readUTF(), dis.readUTF()));
-                            }
+                            });
                             org.getPositionList().addAll(positionList);
 
                             organizationList.add(org);
 
-                            sectionMap.put(SectionType.valueOf(sectionName), new OrganizationSection(organizationList));
-                        }
+                            sectionMap.put(sectionType, new OrganizationSection(organizationList));
+                        });
                         break;
                 }
             });
@@ -124,7 +120,7 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    <T> void readWithException(DataInputStream dis, ReaderInterface<T> reader) throws IOException {
+    void readWithException(DataInputStream dis, ReaderInterface reader) throws IOException {
         int collectionSize = dis.readInt();
         for (int i = 0; i < collectionSize; i++) {
             reader.read();

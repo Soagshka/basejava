@@ -14,17 +14,17 @@ public class ResumeTestData {
         Resume resume = new Resume(uuid, fullName);
 
         Map<SectionType, AbstractSection> sectionMap = new EnumMap<>(SectionType.class);
-        Map<ContactType, AbstractSection> contactType = new EnumMap<>(ContactType.class);
+        Map<ContactType, String> contactType = new EnumMap<>(ContactType.class);
 
         List<String> testList = new ArrayList<>();
 
-        contactType.put(ContactType.TELEPHONE, new SimpleTextSection("+7(921) 855-0482"));
-        contactType.put(ContactType.SKYPE, new SimpleTextSection("grigory.kislin"));
-        contactType.put(ContactType.MAIL, new SimpleTextSection("gkislin@yandex.ru"));
-        contactType.put(ContactType.LINKEDIN, new SimpleTextSection("https://www.linkedin.com/in/gkislin"));
-        contactType.put(ContactType.GITHUB, new SimpleTextSection("https://github.com/gkislin"));
-        contactType.put(ContactType.STACKOVERFLOW, new SimpleTextSection("https://stackoverflow.com/users/548473/grigory-kislin"));
-        contactType.put(ContactType.HOMEPAGE, new SimpleTextSection("http://gkislin.ru/"));
+        contactType.put(ContactType.TELEPHONE, "+7(921) 855-0482");
+        contactType.put(ContactType.SKYPE, "grigory.kislin");
+        contactType.put(ContactType.MAIL, "gkislin@yandex.ru");
+        contactType.put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        contactType.put(ContactType.GITHUB, "https://github.com/gkislin");
+        contactType.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
+        contactType.put(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
         sectionMap.put(SectionType.OBJECTIVE,
                 new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
