@@ -6,37 +6,29 @@ public class MainConcurrency {
         String resource2 = "resource2";
 
         Thread thread1 = new Thread(() -> {
-            synchronized (resource1) {
-                System.out.println("Thread 1 Locked resource1");
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                synchronized (resource2) {
-                    System.out.println("Thread 1 locked resource2");
-                }
-            }
+            doLock(resource1, resource2);
         });
 
         Thread thread2 = new Thread(() -> {
-            synchronized (resource2) {
-                System.out.println("Thread 2 Locked resource2");
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                synchronized (resource1) {
-                    System.out.println("Thread 2 locked resource1");
-                }
-            }
+            doLock(resource2, resource1);
         });
         thread1.start();
         thread2.start();
+    }
+
+    public static <T, K> void doLock(T resource1, K resource2) {
+        synchronized (resource1) {
+            System.out.println("Resource 1 locked by " + resource1);
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            synchronized (resource2) {
+                System.out.println("Resource 2 locked by " + resource2);
+            }
+        }
     }
 }
