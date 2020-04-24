@@ -1,3 +1,5 @@
+package com.urise.webapp;
+
 public class MainConcurrency {
     public static void main(String[] args) {
         String resource1 = "resource1";
