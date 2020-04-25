@@ -14,11 +14,7 @@ public class MainNumbers {
     }
 
     public static int minValue(int[] values) {
-        StringBuilder stringBuilder = new StringBuilder();
-        Arrays.stream(values).filter(value -> value < 9 && value > 0).distinct().sorted().forEach(value -> {
-            stringBuilder.append(value);
-        });
-        return Integer.parseInt(stringBuilder.toString());
+        return Arrays.stream(values).filter(value -> value <= 9 && value > 0).distinct().sorted().reduce(0, (left, right) -> Integer.parseInt(left + String.valueOf(right)));
     }
 
     public static List<Integer> oddOrEven(List<Integer> integers) {
