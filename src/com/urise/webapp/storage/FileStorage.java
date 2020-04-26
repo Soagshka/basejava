@@ -100,6 +100,6 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     protected void objectNotNull(Object object) {
-        if (object == null) throw new StorageException("Null object ", null);
+        if (object == null) throw new StorageException("Null object ", null, null);
     }
 }
