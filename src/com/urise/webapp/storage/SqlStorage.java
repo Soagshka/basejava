@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
@@ -53,12 +54,17 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
-            preparedStatement.setString(1, resume.getUuid());
-            preparedStatement.setString(2, resume.getFullName());
-            preparedStatement.execute();
-            return null;
-        }, "INSERT INTO resume (uuid, full_name) values (?,?)");
+        try {
+            sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+                preparedStatement.setString(1, resume.getUuid());
+                preparedStatement.setString(2, resume.getFullName());
+                preparedStatement.execute();
+                return null;
+            }, "INSERT INTO resume (uuid, full_name) values (?,?)");
+        } catch (Exception e) {
+            throw new ExistStorageException(e);
+        }
+
     }
 
     @Override
@@ -85,7 +91,7 @@ public class SqlStorage implements Storage {
                     } while (resultSet.next());
                     return resumeList;
                 },
-                "select * from resume order by full_name asc");
+                "select * from resume order by full_name, uuid asc");
     }
 
     @Override
