@@ -4,25 +4,19 @@ import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.sql.ConnectionFactory;
 import com.urise.webapp.util.SqlHelper;
 
-import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SqlStorage implements Storage {
-    public final ConnectionFactory connectionFactory;
     private SqlHelper sqlHelper = new SqlHelper();
-
-    public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-    }
 
     @Override
     public void clear() {
-        sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+        sqlHelper.executeQuery(preparedStatement -> {
             preparedStatement.execute();
             return null;
         }, "DELETE FROM resume");
@@ -30,7 +24,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+        return sqlHelper.executeQuery(preparedStatement -> {
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
@@ -42,7 +36,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+        sqlHelper.executeQuery(preparedStatement -> {
             preparedStatement.setString(1, resume.getFullName());
             preparedStatement.setString(2, resume.getUuid());
             if (preparedStatement.executeUpdate() == 0) {
@@ -55,21 +49,25 @@ public class SqlStorage implements Storage {
     @Override
     public void save(Resume resume) {
         try {
-            sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+            sqlHelper.executeQuery(preparedStatement -> {
                 preparedStatement.setString(1, resume.getUuid());
                 preparedStatement.setString(2, resume.getFullName());
                 preparedStatement.execute();
                 return null;
             }, "INSERT INTO resume (uuid, full_name) values (?,?)");
-        } catch (Exception e) {
-            throw new ExistStorageException(e);
+        } catch (RuntimeException e) {
+            Throwable rootCause = com.google.common.base.Throwables.getRootCause(e);
+            if (rootCause instanceof SQLException) {
+                if ("23505".equals(((SQLException) rootCause).getSQLState())) {
+                    throw new ExistStorageException(e);
+                }
+            }
         }
-
     }
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+        sqlHelper.executeQuery(preparedStatement -> {
             preparedStatement.setString(1, uuid);
             if (preparedStatement.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
@@ -80,7 +78,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+        return sqlHelper.executeQuery(preparedStatement -> {
                     ResultSet resultSet = preparedStatement.executeQuery();
                     if (!resultSet.next()) {
                         throw new StorageException("Empty table", null, null);
@@ -96,7 +94,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public int size() {
-        return sqlHelper.executeQuery(connectionFactory, preparedStatement -> {
+        return sqlHelper.executeQuery(preparedStatement -> {
                     ResultSet resultSet = preparedStatement.executeQuery();
                     if (!resultSet.next()) {
                         throw new StorageException("Empty table", null, null);
