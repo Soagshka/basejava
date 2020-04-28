@@ -1,9 +1,7 @@
-package com.urise.webapp.util;
+package com.urise.webapp.sql;
 
 import com.urise.webapp.Config;
-import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.StorageException;
-import com.urise.webapp.sql.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,12 +21,22 @@ public class SqlHelper {
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             return sqlExecutor.getResult(preparedStatement);
         } catch (SQLException e) {
-            Throwable rootCause = com.google.common.base.Throwables.getRootCause(e);
-            if (rootCause instanceof SQLException) {
-                if ("23505".equals(((SQLException) rootCause).getSQLState())) {
-                    throw new ExistStorageException(e);
-                }
+            throw ExceptionUtil.convertException(e);
+        }
+    }
+
+    public <T> T transactionalExecute(SqlTransaction<T> executor) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                T res = executor.execute(conn);
+                conn.commit();
+                return res;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw ExceptionUtil.convertException(e);
             }
+        } catch (SQLException e) {
             throw new StorageException(e);
         }
     }
