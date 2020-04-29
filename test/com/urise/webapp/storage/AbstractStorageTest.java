@@ -4,6 +4,7 @@ import com.urise.webapp.Config;
 import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
@@ -57,6 +59,9 @@ public abstract class AbstractStorageTest {
     @Test()
     public void update() throws Exception {
         Resume resume = ResumeTestData.createResume(UUID_3, "Karpov");
+        Map<ContactType, String> contactMap = resume.getContactMap();
+        contactMap.remove(ContactType.SKYPE);
+        contactMap.put(ContactType.SKYPE, "testSkype123");
         storage.update(resume);
         Assert.assertEquals(resume, storage.get(UUID_3));
     }
