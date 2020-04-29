@@ -1,7 +1,6 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.SqlHelper;
@@ -17,27 +16,6 @@ import java.util.Map;
 
 public class SqlStorage implements Storage {
     private SqlHelper sqlHelper = new SqlHelper();
-
-    protected void deleteContacts(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE from contact where resume_uuid = ?")) {
-            ps.setString(1, resume.getUuid());
-            ps.executeUpdate();
-        }
-    }
-
-    protected void insertContacts(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (type, value, resume_uuid) VALUES (?,?,?)")) {
-            if (resume.getContactMap() != null) {
-                for (Map.Entry<ContactType, String> contact : resume.getContactMap().entrySet()) {
-                    ps.setString(1, contact.getKey().name());
-                    ps.setString(2, contact.getValue());
-                    ps.setString(3, resume.getUuid());
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-        }
-    }
 
     @Override
     public void clear() {
@@ -96,7 +74,7 @@ public class SqlStorage implements Storage {
                         ps.setString(2, resume.getFullName());
                         ps.execute();
                     }
-            insertContacts(conn, resume);
+                    insertContacts(conn, resume);
                     return null;
                 }
         );
@@ -123,13 +101,8 @@ public class SqlStorage implements Storage {
                     Map<String, Resume> resumeMap = new LinkedHashMap<>();
                     do {
                         String uuid = resultSet.getString("uuid").trim();
-                        Resume resume = resumeMap.computeIfAbsent(uuid, s -> {
-                            try {
-                                return new Resume(uuid, resultSet.getString("full_name"));
-                            } catch (SQLException throwables) {
-                                throw new StorageException(throwables);
-                            }
-                        });
+                        String full_name = resultSet.getString("full_name");
+                        Resume resume = resumeMap.computeIfAbsent(uuid, s -> new Resume(uuid, full_name));
                         resume.addContact(ContactType.valueOf(resultSet.getString("type")), resultSet.getString("value"));
                     } while (resultSet.next());
                     return new ArrayList<>(resumeMap.values());
@@ -150,5 +123,26 @@ public class SqlStorage implements Storage {
                     return resultSet.getInt(1);
                 },
                 "SELECT COUNT(*) FROM resume");
+    }
+
+    private void deleteContacts(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE from contact where resume_uuid = ?")) {
+            ps.setString(1, resume.getUuid());
+            ps.executeUpdate();
+        }
+    }
+
+    private void insertContacts(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (type, value, resume_uuid) VALUES (?,?,?)")) {
+            if (!resume.getContactMap().isEmpty()) {
+                for (Map.Entry<ContactType, String> contact : resume.getContactMap().entrySet()) {
+                    ps.setString(1, contact.getKey().name());
+                    ps.setString(2, contact.getValue());
+                    ps.setString(3, resume.getUuid());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+        }
     }
 }
