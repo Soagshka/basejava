@@ -56,6 +56,10 @@ public class Resume implements Comparable<Resume>, Serializable {
         contactMap.put(type, value);
     }
 
+    public void addSection(SectionType type, AbstractSection value) {
+        sectionMap.put(type, value);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,7 +67,7 @@ public class Resume implements Comparable<Resume>, Serializable {
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) &&
                 Objects.equals(fullName, resume.fullName)
-//                && Objects.equals(sectionMap, resume.sectionMap)
+                && Objects.equals(sectionMap, resume.sectionMap)
                 && Objects.equals(contactMap, resume.contactMap);
     }
 

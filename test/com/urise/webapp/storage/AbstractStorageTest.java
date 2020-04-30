@@ -4,17 +4,13 @@ import com.urise.webapp.Config;
 import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.ContactType;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
@@ -75,7 +71,8 @@ public abstract class AbstractStorageTest {
     public void save() throws Exception {
         storage.save(RESUME_4);
         Assert.assertEquals(4, storage.size());
-        Assert.assertEquals(RESUME_4, storage.get(UUID_4));
+        Resume actual = storage.get(UUID_4);
+        Assert.assertEquals(RESUME_4, actual);
     }
 
     @Test(expected = ExistStorageException.class)
@@ -104,7 +101,8 @@ public abstract class AbstractStorageTest {
     public void getAllSorted() throws Exception {
         List<Resume> testListStorage = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
         testListStorage.sort(RESUME_COMPARATOR);
-        Assert.assertEquals(testListStorage, storage.getAllSorted());
+        List<Resume> allSorted = storage.getAllSorted();
+        Assert.assertEquals(testListStorage, allSorted);
         Assert.assertEquals(testListStorage.size(), storage.getAllSorted().size());
     }
 
@@ -113,7 +111,7 @@ public abstract class AbstractStorageTest {
         storage.get("dummy");
     }
 
-//    @Test
+    //    @Test
 //    public void checkOrganizationSection() {
 //        List<Organization> testPositionList = new ArrayList<>();
 //        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1");
@@ -138,23 +136,23 @@ public abstract class AbstractStorageTest {
 //        Assert.assertEquals(organizationSection, RESUME_1.getSectionMap().get(SectionType.EDUCATION));
 //    }
 //
-//    @Test
-//    public void checkListTextSection() {
-//        List<String> testList = new ArrayList<>();
-//
-//        testList.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
-//        testList.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
-//        testList.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
-//
-//        ListTextSection listTextSection = new ListTextSection(testList);
-//
-//        Assert.assertEquals(listTextSection, RESUME_1.getSectionMap().get(SectionType.QUALIFICATIONS));
-//    }
-//
-//    @Test
-//    public void checkSimpleTextSection() {
-//        SimpleTextSection simpleTextSection = new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
-//
-//        Assert.assertEquals(simpleTextSection, RESUME_1.getSectionMap().get(SectionType.OBJECTIVE));
-//    }
+    @Test
+    public void checkListTextSection() {
+        List<String> testList = new ArrayList<>();
+
+        testList.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
+        testList.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
+        testList.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
+
+        ListTextSection listTextSection = new ListTextSection(testList);
+
+        Assert.assertEquals(listTextSection, RESUME_1.getSectionMap().get(SectionType.QUALIFICATIONS));
+    }
+
+    @Test
+    public void checkSimpleTextSection() {
+        SimpleTextSection simpleTextSection = new SimpleTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
+
+        Assert.assertEquals(simpleTextSection, RESUME_1.getSectionMap().get(SectionType.OBJECTIVE));
+    }
 }
