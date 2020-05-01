@@ -12,6 +12,11 @@ public class SqlHelper {
     public final ConnectionFactory connectionFactory;
 
     public SqlHelper() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         connectionFactory = () -> DriverManager.getConnection(Config.get().getDbUrl(),
                 Config.get().getDbUser(), Config.get().getDbPassword());
     }
