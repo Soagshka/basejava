@@ -55,8 +55,8 @@ public class SqlStorage implements Storage {
                             throw new NotExistStorageException(resume.getUuid());
                         }
                     }
-                    deleteRaws(conn, resume, "contact");
-                    deleteRaws(conn, resume, "section");
+                    deleteRaws(conn, resume, "DELETE from contact where resume_uuid = ?");
+                    deleteRaws(conn, resume, "DELETE from section where resume_uuid = ?");
                     insertContacts(conn, resume);
                     insertSection(conn, resume);
                     return null;
@@ -126,8 +126,8 @@ public class SqlStorage implements Storage {
                 "SELECT COUNT(*) FROM resume");
     }
 
-    private void deleteRaws(Connection conn, Resume resume, String tableName) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE from " + tableName + " where resume_uuid = ?")) {
+    private void deleteRaws(Connection conn, Resume resume, String query) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, resume.getUuid());
             ps.executeUpdate();
         }
