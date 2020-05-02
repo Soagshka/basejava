@@ -17,21 +17,14 @@ create unique index contact_uuid_type_index
 
 CREATE TABLE public.section
 (
-    id          integer                                    NOT NULL DEFAULT nextval('section_id_seq'::regclass),
-    type        text COLLATE pg_catalog."default"          NOT NULL,
-    value       text COLLATE pg_catalog."default"          NOT NULL,
-    resume_uuid character(36) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT section_pk PRIMARY KEY (id),
-    CONSTRAINT section_resume_uuid_fk FOREIGN KEY (resume_uuid)
-        REFERENCES public.resume (uuid) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE
+    id          serial        NOT NULL primary key,
+    resume_uuid character(36) NOT NULL references resume on delete cascade,
+    type        text          NOT NULL,
+    value       text          NOT NULL
 );
 
 CREATE UNIQUE INDEX section_uuid_type_index
-    ON public.section USING btree
-        (resume_uuid COLLATE pg_catalog."default" ASC NULLS LAST, type COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
+    ON section (resume_uuid, type);
 
 
 
