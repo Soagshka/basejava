@@ -1,5 +1,6 @@
 package com.urise.webapp.web;
 
+import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.storage.SqlStorage;
 import com.urise.webapp.storage.Storage;
@@ -19,27 +20,53 @@ public class ResumeServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume resume = null;
+        try {
+            resume = storage.get(uuid);
+        } catch (NotExistStorageException e) {
+            System.out.println("Not exist resume, creating new one");
+        }
+        if (resume != null) {
+            resume.setFullName(fullName);
+            storage.update(resume);
+        } else {
+            resume = new Resume(uuid, fullName);
+            storage.save(resume);
+        }
 
+        response.sendRedirect("resume");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-//        response.setHeader("Content-Type", "text/html; charset=UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<table style=\"width:100%\">");
-        stringBuilder.append("<tr>");
-        stringBuilder.append("<th>UUID</th>");
-        stringBuilder.append("<th>FullName</th>");
-        stringBuilder.append("</tr>");
-        for (Resume resume : storage.getAllSorted()) {
-            stringBuilder.append("<tr>");
-            stringBuilder.append("<td>" + resume.getUuid() + "</td>");
-            stringBuilder.append("<td>" + resume.getFullName() + "</td>");
-            stringBuilder.append("</tr>");
+        String uuid = request.getParameter("uuid");
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
         }
-        stringBuilder.append("</table>");
-        response.getWriter().write(stringBuilder.toString());
+        Resume resume;
+        switch (action) {
+            case "delete":
+                storage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "view":
+            case "edit":
+                resume = storage.get(uuid);
+                break;
+            case "add":
+                resume = new Resume("");
+                break;
+            default:
+                throw new IllegalArgumentException("Action " + action + " is illegal");
+        }
+        request.setAttribute("resume", resume);
+        request.getRequestDispatcher(
+                ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
+        ).forward(request, response);
     }
 }

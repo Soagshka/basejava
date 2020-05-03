@@ -36,6 +36,10 @@ public class Resume implements Comparable<Resume>, Serializable {
         return fullName;
     }
 
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public Map<SectionType, AbstractSection> getSectionMap() {
         return sectionMap;
     }
@@ -58,6 +62,14 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public void addSection(SectionType type, AbstractSection value) {
         sectionMap.put(type, value);
+    }
+
+    public String getContact(ContactType type) {
+        return contactMap.get(type);
+    }
+
+    public AbstractSection getSection(SectionType type) {
+        return sectionMap.get(type);
     }
 
     @Override

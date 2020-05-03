@@ -102,7 +102,10 @@ public class SqlStorage implements Storage {
                         String uuid = resultSet.getString("uuid").trim();
                         String full_name = resultSet.getString("full_name");
                         Resume resume = resumeMap.computeIfAbsent(uuid, s -> new Resume(uuid, full_name));
-                        addContactAndSections(resultSet.getString("type"), resume, resultSet);
+                        String type = resultSet.getString("type");
+                        if (type != null) {
+                            addContactAndSections(type, resume, resultSet);
+                        }
                     } while (resultSet.next());
                     return new ArrayList<>(resumeMap.values());
                 },
