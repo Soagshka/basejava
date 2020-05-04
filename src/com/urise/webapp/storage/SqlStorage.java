@@ -1,14 +1,21 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.*;
+import com.urise.webapp.model.AbstractSection;
+import com.urise.webapp.model.ContactType;
+import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.SectionType;
 import com.urise.webapp.sql.SqlHelper;
+import com.urise.webapp.util.JsonParser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     private SqlHelper sqlHelper = new SqlHelper();
@@ -156,21 +163,9 @@ public class SqlStorage implements Storage {
                 for (Map.Entry<SectionType, AbstractSection> sectionEntry : resume.getSectionMap().entrySet()) {
                     ps.setString(1, sectionEntry.getKey().name());
                     ps.setString(3, resume.getUuid());
-                    switch (sectionEntry.getKey()) {
-                        case PERSONAL:
-                        case OBJECTIVE:
-                            ps.setString(2, ((SimpleTextSection) sectionEntry.getValue()).getInformation());
-                            ps.addBatch();
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATIONS:
-                            ps.setString(2, String.join("\n", ((ListTextSection) sectionEntry.getValue()).getInformation()));
-                            ps.addBatch();
-                            break;
-                        case EDUCATION:
-                        case EXPERIENCE:
-                            break;
-                    }
+                    AbstractSection abstractSection = sectionEntry.getValue();
+                    ps.setString(2, JsonParser.write(abstractSection, AbstractSection.class));
+                    ps.addBatch();
                 }
                 ps.executeBatch();
             }
@@ -178,20 +173,19 @@ public class SqlStorage implements Storage {
     }
 
     private void addContactAndSections(String type, Resume resume, ResultSet resultSet) throws SQLException {
-        switch (type) {
-            case "PERSONAL":
-            case "OBJECTIVE":
-                resume.addSection(SectionType.valueOf(type), new SimpleTextSection(resultSet.getString("value")));
-                break;
-            case "ACHIEVEMENT":
-            case "QUALIFICATIONS":
-                resume.addSection(SectionType.valueOf(type), new ListTextSection(Arrays.asList(resultSet.getString("value").split("\n"))));
-                break;
-            case "EDUCATION":
-            case "EXPERIENCE":
-                break;
-            default:
-                resume.addContact(ContactType.valueOf(type), resultSet.getString("value"));
+        if (contactOrSectionCheck(type)) {
+            resume.addSection(SectionType.valueOf(type), JsonParser.read(resultSet.getString("value"), AbstractSection.class));
+        } else {
+            resume.addContact(ContactType.valueOf(type), resultSet.getString("value"));
         }
+    }
+
+    private boolean contactOrSectionCheck(String type) {
+        for (SectionType sectionType : SectionType.values()) {
+            if (sectionType.name().equals(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 package com.urise.webapp.web;
 
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 import com.urise.webapp.storage.SqlStorage;
 import com.urise.webapp.storage.Storage;
 
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -29,11 +30,34 @@ public class ResumeServlet extends HttpServlet {
         } catch (NotExistStorageException e) {
             System.out.println("Not exist resume, creating new one");
         }
-        if (resume != null) {
+        boolean isAlreadyExist = resume != null;
+        if (isAlreadyExist) {
             resume.setFullName(fullName);
-            storage.update(resume);
         } else {
             resume = new Resume(uuid, fullName);
+        }
+        for (ContactType type : ContactType.values()) {
+            String value = request.getParameter(type.name());
+            resume.addContact(type, value);
+        }
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null) {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.addSection(type, new SimpleTextSection(value));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        resume.addSection(type, new ListTextSection(Arrays.asList(value.split("\\n"))));
+                        break;
+                }
+            }
+        }
+        if (isAlreadyExist) {
+            storage.update(resume);
+        } else {
             storage.save(resume);
         }
 
@@ -41,6 +65,7 @@ public class ResumeServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
         if (action == null) {
@@ -57,6 +82,16 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 resume = storage.get(uuid);
+                for (SectionType type : SectionType.values()) {
+                    AbstractSection section = resume.getSection(type);
+                    switch (type) {
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            section = new OrganizationSection();
+                            break;
+                    }
+                    resume.addSection(type, section);
+                }
                 break;
             case "add":
                 resume = new Resume("");
