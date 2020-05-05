@@ -22,25 +22,26 @@
     <p>
     <p>
         <c:forEach var="sectionEntry" items="${resume.sectionMap}">
-            <jsp:useBean id="sectionEntry"
-                         type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
-            <c:set var="type" value="${sectionEntry.key}"/>
-            <c:set var="section" value="${sectionEntry.value}"/>
-            <jsp:useBean id="section" type="com.urise.webapp.model.AbstractSection"/>
-        <c:choose>
+        <jsp:useBean id="sectionEntry"
+                     type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
+        <c:set var="type" value="${sectionEntry.key}"/>
+        <c:set var="section" value="${sectionEntry.value}"/>
+        <jsp:useBean id="section" type="com.urise.webapp.model.AbstractSection"/>
+    <h2><a>${type.title}</a></h2>
+    <c:choose>
 
         <c:when test="${type == 'OBJECTIVE' || type=='PERSONAL'}">
-                <%=((SimpleTextSection) section).getInformation()%><br/>
+            <%=((SimpleTextSection) section).getInformation()%><br/>
         </c:when>
 
         <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-        <c:forEach var="item" items="<%=((ListTextSection) section).getInformation()%>">
-            ${item}<br/>
-        </c:forEach>
+            <c:forEach var="item" items="<%=((ListTextSection) section).getInformation()%>">
+                ${item}<br/>
+            </c:forEach>
         </c:when>
 
-        </c:choose>
-        </c:forEach>
+    </c:choose>
+    </c:forEach>
     <p>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

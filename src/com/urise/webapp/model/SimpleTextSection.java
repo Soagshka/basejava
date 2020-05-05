@@ -6,6 +6,10 @@ public class SimpleTextSection extends AbstractSection {
 
     private String information;
 
+    public SimpleTextSection() {
+        this("");
+    }
+
     public SimpleTextSection(String information) {
         this.information = information;
     }

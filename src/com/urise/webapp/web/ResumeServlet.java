@@ -1,6 +1,5 @@
 package com.urise.webapp.web;
 
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.SqlStorage;
 import com.urise.webapp.storage.Storage;
@@ -24,34 +23,42 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = null;
-        try {
-            resume = storage.get(uuid);
-        } catch (NotExistStorageException e) {
-            System.out.println("Not exist resume, creating new one");
+        if (fullName.trim().isEmpty()) {
+            response.sendRedirect("resume");
+            return;
         }
-        boolean isAlreadyExist = resume != null;
+        boolean isAlreadyExist = (uuid != null && !uuid.trim().isEmpty());
+        Resume resume;
         if (isAlreadyExist) {
+            resume = storage.get(uuid);
             resume.setFullName(fullName);
         } else {
-            resume = new Resume(uuid, fullName);
+            resume = new Resume(fullName);
         }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            resume.addContact(type, value);
+            if (value.trim().isEmpty()) {
+                resume.getContactMap().remove(type);
+            } else {
+                resume.addContact(type, value);
+            }
         }
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             if (value != null) {
-                switch (type) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        resume.addSection(type, new SimpleTextSection(value));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        resume.addSection(type, new ListTextSection(Arrays.asList(value.split("\\n"))));
-                        break;
+                if (value.trim().isEmpty()) {
+                    resume.getSectionMap().remove(type);
+                } else {
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            resume.addSection(type, new SimpleTextSection(value));
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            resume.addSection(type, new ListTextSection(Arrays.asList(value.split("\\n"))));
+                            break;
+                    }
                 }
             }
         }
@@ -85,6 +92,44 @@ public class ResumeServlet extends HttpServlet {
                 for (SectionType type : SectionType.values()) {
                     AbstractSection section = resume.getSection(type);
                     switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            if (section == null) {
+                                section = new SimpleTextSection();
+                            }
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            if (section == null) {
+                                section = new ListTextSection();
+                            }
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            if (section == null) {
+                                section = new OrganizationSection();
+                            }
+                            break;
+                    }
+                    resume.addSection(type, section);
+                }
+                break;
+            case "add":
+                resume = new Resume();
+                for (ContactType contactType : ContactType.values()) {
+                    resume.addContact(contactType, "");
+                }
+                for (SectionType type : SectionType.values()) {
+                    AbstractSection section = resume.getSection(type);
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            section = new SimpleTextSection();
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            section = new ListTextSection();
+                            break;
                         case EXPERIENCE:
                         case EDUCATION:
                             section = new OrganizationSection();
@@ -92,9 +137,6 @@ public class ResumeServlet extends HttpServlet {
                     }
                     resume.addSection(type, section);
                 }
-                break;
-            case "add":
-                resume = new Resume("");
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");

@@ -14,10 +14,14 @@ public class Resume implements Comparable<Resume>, Serializable {
     private static final long serialVersionUID = 1L;
 
     // Unique identifier
-    private final String uuid;
+    private String uuid;
     private String fullName;
     private Map<ContactType, String> contactMap = new EnumMap<>(ContactType.class);
     private Map<SectionType, AbstractSection> sectionMap = new EnumMap<>(SectionType.class);
+
+    public Resume() {
+
+    }
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
