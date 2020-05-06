@@ -89,54 +89,11 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 resume = storage.get(uuid);
-                for (SectionType type : SectionType.values()) {
-                    AbstractSection section = resume.getSection(type);
-                    switch (type) {
-                        case OBJECTIVE:
-                        case PERSONAL:
-                            if (section == null) {
-                                section = new SimpleTextSection();
-                            }
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATIONS:
-                            if (section == null) {
-                                section = new ListTextSection();
-                            }
-                            break;
-                        case EXPERIENCE:
-                        case EDUCATION:
-                            if (section == null) {
-                                section = new OrganizationSection();
-                            }
-                            break;
-                    }
-                    resume.addSection(type, section);
-                }
+                addSection(resume);
                 break;
             case "add":
                 resume = new Resume();
-                for (ContactType contactType : ContactType.values()) {
-                    resume.addContact(contactType, "");
-                }
-                for (SectionType type : SectionType.values()) {
-                    AbstractSection section = resume.getSection(type);
-                    switch (type) {
-                        case OBJECTIVE:
-                        case PERSONAL:
-                            section = new SimpleTextSection();
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATIONS:
-                            section = new ListTextSection();
-                            break;
-                        case EXPERIENCE:
-                        case EDUCATION:
-                            section = new OrganizationSection();
-                            break;
-                    }
-                    resume.addSection(type, section);
-                }
+                addSection(resume);
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -145,5 +102,32 @@ public class ResumeServlet extends HttpServlet {
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
+    }
+
+    private void addSection(Resume resume) {
+        for (SectionType type : SectionType.values()) {
+            AbstractSection section = resume.getSection(type);
+            switch (type) {
+                case OBJECTIVE:
+                case PERSONAL:
+                    if (section == null) {
+                        section = new SimpleTextSection();
+                    }
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    if (section == null) {
+                        section = new ListTextSection();
+                    }
+                    break;
+                case EXPERIENCE:
+                case EDUCATION:
+                    if (section == null) {
+                        section = new OrganizationSection();
+                    }
+                    break;
+            }
+            resume.addSection(type, section);
+        }
     }
 }

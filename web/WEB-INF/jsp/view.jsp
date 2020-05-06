@@ -27,18 +27,25 @@
         <c:set var="type" value="${sectionEntry.key}"/>
         <c:set var="section" value="${sectionEntry.value}"/>
         <jsp:useBean id="section" type="com.urise.webapp.model.AbstractSection"/>
-    <h2><a>${type.title}</a></h2>
     <c:choose>
 
-        <c:when test="${type == 'OBJECTIVE' || type=='PERSONAL'}">
-            <%=((SimpleTextSection) section).getInformation()%><br/>
-        </c:when>
+    <c:when test="${type == 'OBJECTIVE' || type=='PERSONAL'}">
+        <c:set var="sectionValue" value="<%=((SimpleTextSection) section).getInformation()%>"/>
+    <c:if test="${(sectionValue != '') && (sectionValue != null)}">
+    <h2><a>${type.title}</a></h2>
+    <%=((SimpleTextSection) section).getInformation()%>
+    </c:if>
+    </c:when>
 
-        <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-            <c:forEach var="item" items="<%=((ListTextSection) section).getInformation()%>">
+    <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
+        <c:forEach var="item" items="<%=((ListTextSection) section).getInformation()%>">
+            <c:set var="sectionValue" value='${item}'/>
+            <c:if test="${(sectionValue != '') && (sectionValue != null)}">
+                <h2><a>${type.title}</a></h2>
                 ${item}<br/>
-            </c:forEach>
-        </c:when>
+            </c:if>
+        </c:forEach>
+    </c:when>
 
     </c:choose>
     </c:forEach>

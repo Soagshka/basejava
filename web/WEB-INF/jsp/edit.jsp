@@ -39,9 +39,8 @@
                 </c:when>
 
                 <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-                    <c:forEach var="item" items="<%=((ListTextSection) section).getInformation()%>">
-                        <textarea name="${type}" cols="30" rows="5">${item}</textarea><br/>
-                    </c:forEach>
+                    <textarea name="${type}" cols="30"
+                              rows="5"><%=String.join("\n", ((ListTextSection) section).getInformation())%></textarea><br/>
                 </c:when>
             </c:choose>
         </c:forEach>
