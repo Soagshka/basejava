@@ -38,13 +38,11 @@
     </c:when>
 
     <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-        <c:forEach var="item" items="<%=((ListTextSection) section).getInformation()%>">
-            <c:set var="sectionValue" value='${item}'/>
-            <c:if test="${(sectionValue != '') && (sectionValue != null)}">
-                <h2><a>${type.title}</a></h2>
-                ${item}<br/>
-            </c:if>
-        </c:forEach>
+        <c:set var="sectionValue" value='<%=((ListTextSection) section).getInformation()%>'/>
+        <c:if test="${(sectionValue != '') && (sectionValue != null)}">
+            <h2><a>${type.title}</a></h2>
+            <%=String.join("\n", ((ListTextSection) section).getInformation())%>
+        </c:if>
     </c:when>
 
     </c:choose>

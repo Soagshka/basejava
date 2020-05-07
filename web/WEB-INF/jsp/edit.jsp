@@ -34,12 +34,12 @@
             <h2><a>${type.title}</a></h2>
             <c:choose>
                 <c:when test="${type == 'OBJECTIVE' || type=='PERSONAL'}">
-                    <textarea name="${type}" cols="30"
+                    <textarea cols="60" name="${type}"
                               rows="5"><%=((SimpleTextSection) section).getInformation()%></textarea><br/>
                 </c:when>
 
                 <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-                    <textarea name="${type}" cols="30"
+                    <textarea cols="60" name="${type}"
                               rows="5"><%=String.join("\n", ((ListTextSection) section).getInformation())%></textarea><br/>
                 </c:when>
             </c:choose>
