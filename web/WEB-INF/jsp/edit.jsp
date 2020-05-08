@@ -1,7 +1,4 @@
-<%@ page import="com.urise.webapp.model.ContactType" %>
-<%@ page import="com.urise.webapp.model.ListTextSection" %>
-<%@ page import="com.urise.webapp.model.SectionType" %>
-<%@ page import="com.urise.webapp.model.SimpleTextSection" %>
+<%@ page import="com.urise.webapp.model.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -42,6 +39,50 @@
                     <textarea cols="60" name="${type}"
                               rows="5"><%=String.join("\n", ((ListTextSection) section).getInformation())%></textarea><br/>
                 </c:when>
+
+                <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
+                    <c:forEach var="organization" items="<%=((OrganizationSection) section).getOrganizationList()%>"
+                               varStatus="counter">
+                        <h3>
+                            <dt>${organization.title}</dt>
+                        </h3>
+                        <dl>
+                            <dt>Имя организации :</dt>
+                            <dd><input type="text" name="${type}" size=50 value="${organization.title}"></dd>
+                        </dl>
+                        <dl>
+                            <dt>Сайт организации :</dt>
+                            <dd><input type="text" name="${type}link" size=50 value="${organization.link}"></dd>
+                        </dl>
+                        <c:forEach var="position" items="${organization.positionList}">
+                            <jsp:useBean id="position" type="com.urise.webapp.model.Position"/>
+                            <dl>
+                                <dt>Дата начала работы :</dt>
+                                <dd>
+                                    <input type="text" name="${type}${counter.index}startDate" size=10
+                                           value="<%=position.getDateStart().toString()%>" placeholder="MM/yyyy">
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>Дата увольнения :</dt>
+                                <dd>
+                                    <input type="text" name="${type}${counter.index}endDate" size=10
+                                           value="<%=position.getDateEnd().toString()%>" placeholder="MM/yyyy">
+                            </dl>
+                            <dl>
+                                <dt>Должность:</dt>
+                                <dd><input type="text" name='${type}${counter.index}information' size=75
+                                           value="${position.information}">
+                            </dl>
+                            <dl>
+                                <dt>Описание:</dt>
+                                <dd><textarea name="${type}${counter.index}description" rows=5
+                                              cols=75>${position.description}</textarea></dd>
+                            </dl>
+                        </c:forEach>
+                    </c:forEach>
+                </c:when>
+
             </c:choose>
         </c:forEach>
         <hr>

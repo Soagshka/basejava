@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -58,6 +61,28 @@ public class ResumeServlet extends HttpServlet {
                         case QUALIFICATIONS:
                             resume.addSection(type, new ListTextSection(Arrays.asList(value.split("\\n"))));
                             break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            String[] title = request.getParameterValues(type.name());
+                            String[] link = request.getParameterValues(type.name() + "link");
+                            List<Organization> organizationList = new ArrayList<>();
+                            if (title.length != 0) {
+                                for (int i = 0; i < title.length; i++) {
+                                    String[] startDates = request.getParameterValues(type.name() + i + "startDate");
+                                    String[] endDates = request.getParameterValues(type.name() + i + "endDate");
+                                    String[] information = request.getParameterValues(type.name() + i + "information");
+                                    String[] descriptions = request.getParameterValues(type.name() + i + "description");
+                                    List<Position> positionList = new ArrayList<>();
+                                    for (int j = 0; j < information.length; j++) {
+                                        Position position = new Position(YearMonth.parse(startDates[j]), YearMonth.parse(endDates[j]), information[j], descriptions[j]);
+                                        positionList.add(position);
+                                    }
+                                    Organization organization = new Organization(title[i], link[i]);
+                                    organization.getPositionList().addAll(positionList);
+                                    organizationList.add(organization);
+                                }
+                            }
+                            resume.addSection(type, new OrganizationSection(organizationList));
                     }
                 }
             }

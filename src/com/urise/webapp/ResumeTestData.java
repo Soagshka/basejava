@@ -2,10 +2,8 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.*;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.time.YearMonth;
+import java.util.*;
 
 public class ResumeTestData {
     public static void main(String[] args) {
@@ -46,42 +44,42 @@ public class ResumeTestData {
         testList.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
         sectionMap.put(SectionType.QUALIFICATIONS, new ListTextSection(testList));
 
-//        List<Organization> testPositionList = new ArrayList<>();
-//
-//        Organization org1 = new Organization("Java Online Projects", "http://javaops.ru/");
-//        org1.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 10),
-//                YearMonth.now(), "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок."))));
-//        testPositionList.add(org1);
-//
-//        Organization wrike = new Organization("Wrike", "https://www.wrike.com/");
-//        wrike.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2014, 10),
-//                YearMonth.of(2016, 1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами" +
-//                " Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
-//                "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."))));
-//        testPositionList.add(wrike);
-//
-//        sectionMap.put(SectionType.EXPERIENCE, new OrganizationSection(testPositionList));
-//        testPositionList.clear();
-//
-//        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1");
-//        coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
-//                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky", null))));
-//        testPositionList.add(coursera);
-//
-//        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html");
-//        luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
-//                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null))));
-//        testPositionList.add(luxoft);
-//
-//        Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-//                "https://itmo.ru/ru/");
-//        student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
-//                        YearMonth.of(1996, 7), "Аспирантура (программист С, С++)", null),
-//                new Position(YearMonth.of(1987, 9),
-//                        YearMonth.of(1993, 7), "Инженер (программист Fortran, C)", null))));
-//        testPositionList.add(student);
-//
-//        sectionMap.put(SectionType.EDUCATION, new OrganizationSection(testPositionList));
+        List<Organization> testPositionList = new ArrayList<>();
+
+        Organization org1 = new Organization("Java Online Projects", "http://javaops.ru/");
+        org1.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 10),
+                YearMonth.now(), "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок."))));
+        testPositionList.add(org1);
+
+        Organization wrike = new Organization("Wrike", "https://www.wrike.com/");
+        wrike.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2014, 10),
+                YearMonth.of(2016, 1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами" +
+                " Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
+                "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."))));
+        testPositionList.add(wrike);
+
+        sectionMap.put(SectionType.EXPERIENCE, new OrganizationSection(testPositionList));
+        testPositionList.clear();
+
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/learn/progfun1");
+        coursera.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2013, 03),
+                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by Martin Odersky", null))));
+        testPositionList.add(coursera);
+
+        Organization luxoft = new Organization("Luxoft", "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy_analiz_i_proektirovanie_na_uml.html");
+        luxoft.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(2011, 03),
+                YearMonth.of(2011, 4), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null))));
+        testPositionList.add(luxoft);
+
+        Organization student = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
+                "https://itmo.ru/ru/");
+        student.getPositionList().addAll(new ArrayList<>(Arrays.asList(new Position(YearMonth.of(1993, 9),
+                        YearMonth.of(1996, 7), "Аспирантура (программист С, С++)", null),
+                new Position(YearMonth.of(1987, 9),
+                        YearMonth.of(1993, 7), "Инженер (программист Fortran, C)", null))));
+        testPositionList.add(student);
+
+        sectionMap.put(SectionType.EDUCATION, new OrganizationSection(testPositionList));
 
         resume.setContactMap(contactType);
         resume.setSectionMap(sectionMap);
