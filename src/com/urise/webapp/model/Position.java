@@ -13,8 +13,16 @@ public class Position implements Serializable {
     private String description;
 
     public Position(YearMonth dateStart, YearMonth dateEnd, String information, String description) {
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
+        if (dateStart != null) {
+            this.dateStart = dateStart;
+        } else {
+            this.dateStart = YearMonth.now();
+        }
+        if (dateEnd != null) {
+            this.dateEnd = dateEnd;
+        } else {
+            this.dateEnd = YearMonth.now();
+        }
         this.information = information;
         if (description != null) {
             this.description = description;

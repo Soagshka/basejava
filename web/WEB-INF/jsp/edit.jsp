@@ -80,7 +80,16 @@
                                               cols=75>${position.description}</textarea></dd>
                             </dl>
                         </c:forEach>
+                        <td>
+                            <a href="resume?uuid=${resume.uuid}&action=remove-org&section=${type}&name=${organization.title}">Удалить
+                                организацию</a></td>
+                        <br><br>
                     </c:forEach>
+                    <dt>Количество Ваших позиций в новой организации :</dt>
+                    <dd>
+                        <input type="text" name="${type}positionCount" size=10
+                               value="">
+                    </dd>
                 </c:when>
 
             </c:choose>

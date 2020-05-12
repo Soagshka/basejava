@@ -65,6 +65,11 @@ public class ResumeServlet extends HttpServlet {
                         case EDUCATION:
                             String[] title = request.getParameterValues(type.name());
                             String[] link = request.getParameterValues(type.name() + "link");
+                            String[] positionCount = request.getParameterValues(type.name() + "positionCount");
+                            Integer posCount = null;
+                            if (!positionCount[0].isEmpty()) {
+                                posCount = Integer.parseInt(positionCount[0]);
+                            }
                             List<Organization> organizationList = new ArrayList<>();
                             if (title.length != 0) {
                                 for (int i = 0; i < title.length; i++) {
@@ -81,6 +86,13 @@ public class ResumeServlet extends HttpServlet {
                                     organization.getPositionList().addAll(positionList);
                                     organizationList.add(organization);
                                 }
+                            }
+                            if (posCount != null) {
+                                Organization organization = new Organization("", "");
+                                for (int i = 0; i < posCount; i++) {
+                                    organization.getPositionList().add(new Position(null, null, "", null));
+                                }
+                                organizationList.add(organization);
                             }
                             resume.addSection(type, new OrganizationSection(organizationList));
                     }
@@ -106,6 +118,7 @@ public class ResumeServlet extends HttpServlet {
             return;
         }
         Resume resume;
+        OrganizationSection organizationSection;
         switch (action) {
             case "delete":
                 storage.delete(uuid);
@@ -120,6 +133,14 @@ public class ResumeServlet extends HttpServlet {
                 resume = new Resume();
                 addSection(resume);
                 break;
+            case "remove-org":
+                resume = storage.get(uuid);
+                organizationSection = (OrganizationSection) resume.getSection(SectionType.valueOf(request.getParameter("section")));
+                List<Organization> organizationList = organizationSection.getOrganizationList();
+                organizationList.removeIf(organization -> organization.getTitle().equals(request.getParameter("name")));
+                storage.update(resume);
+                response.sendRedirect("resume?uuid=" + uuid + "&action=edit");
+                return;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
