@@ -176,7 +176,7 @@ public class ResumeServlet extends HttpServlet {
 
     private List<Organization> addNewOrganization(Integer posCount, List<Organization> organizationList) {
         if (posCount != null) {
-            Organization organization = new Organization("", "");
+            Organization organization = new Organization("Новая организация", "");
             for (int i = 0; i < posCount; i++) {
                 organization.getPositionList().add(new Position(null, null, "", null));
             }
