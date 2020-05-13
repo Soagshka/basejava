@@ -47,6 +47,13 @@ public class ResumeServlet extends HttpServlet {
             }
         }
         for (SectionType type : SectionType.values()) {
+            String[] positionCount = request.getParameterValues(type.name() + "positionCount");
+            Integer posCount = null;
+            if (positionCount != null) {
+                if (!positionCount[0].isEmpty()) {
+                    posCount = Integer.parseInt(positionCount[0]);
+                }
+            }
             String value = request.getParameter(type.name());
             if (value != null) {
                 if (value.trim().isEmpty()) {
@@ -65,11 +72,6 @@ public class ResumeServlet extends HttpServlet {
                         case EDUCATION:
                             String[] title = request.getParameterValues(type.name());
                             String[] link = request.getParameterValues(type.name() + "link");
-                            String[] positionCount = request.getParameterValues(type.name() + "positionCount");
-                            Integer posCount = null;
-                            if (!positionCount[0].isEmpty()) {
-                                posCount = Integer.parseInt(positionCount[0]);
-                            }
                             List<Organization> organizationList = new ArrayList<>();
                             if (title.length != 0) {
                                 for (int i = 0; i < title.length; i++) {
@@ -87,16 +89,11 @@ public class ResumeServlet extends HttpServlet {
                                     organizationList.add(organization);
                                 }
                             }
-                            if (posCount != null) {
-                                Organization organization = new Organization("", "");
-                                for (int i = 0; i < posCount; i++) {
-                                    organization.getPositionList().add(new Position(null, null, "", null));
-                                }
-                                organizationList.add(organization);
-                            }
-                            resume.addSection(type, new OrganizationSection(organizationList));
+                            resume.addSection(type, new OrganizationSection(addNewOrganization(posCount, organizationList)));
                     }
                 }
+            } else {
+                resume.addSection(type, new OrganizationSection(addNewOrganization(posCount, new ArrayList<>())));
             }
         }
         if (isAlreadyExist) {
@@ -175,5 +172,16 @@ public class ResumeServlet extends HttpServlet {
             }
             resume.addSection(type, section);
         }
+    }
+
+    private List<Organization> addNewOrganization(Integer posCount, List<Organization> organizationList) {
+        if (posCount != null) {
+            Organization organization = new Organization("", "");
+            for (int i = 0; i < posCount; i++) {
+                organization.getPositionList().add(new Position(null, null, "", null));
+            }
+            organizationList.add(organization);
+        }
+        return organizationList;
     }
 }

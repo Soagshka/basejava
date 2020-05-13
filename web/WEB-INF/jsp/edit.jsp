@@ -91,7 +91,6 @@
                                value="">
                     </dd>
                 </c:when>
-
             </c:choose>
         </c:forEach>
         <hr>
